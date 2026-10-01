@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BadgeComponent, ButtonComponent, IconComponent } from '../shared/components/atomics';
 import { UserProfileComponent, NavItemComponent } from '../shared/components/molecules';
+import { AuthService } from '../core/auth/auth.service';
 
 interface NavItem {
   label: string;
@@ -27,9 +28,23 @@ interface NavItem {
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
+  readonly authService = inject(AuthService);
+
   // Sidebar state using Angular signals
   isSidebarOpen = signal<boolean>(true);
   isMobileMenuOpen = signal<boolean>(false);
+
+  // Datos reactivos del usuario autenticado
+  userName = computed(() => this.authService.currentUser()?.displayName || 'Usuario');
+  userEmail = computed(() => this.authService.currentUser()?.email || 'usuario@sistema.local');
+  userInitials = computed(() => {
+    const name = this.userName();
+    const parts = name.split(' ').filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return (name.slice(0, 2) || 'US').toUpperCase();
+  });
 
   // Navigation items for the host shell
   navItems: NavItem[] = [
@@ -44,5 +59,9 @@ export class LayoutComponent {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen.update(open => !open);
+  }
+
+  async logout() {
+    await this.authService.logout();
   }
 }
