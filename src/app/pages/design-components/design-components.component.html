@@ -1,0 +1,202 @@
+<div class="space-y-10 pb-12">
+  <!-- Header / Intro Banner -->
+  <app-welcome-banner
+    chipText="Atomic Design System &bull; Sistema Host"
+    title="Catálogo de Componentes de Diseño"
+  >
+    Explora la biblioteca de componentes reutilizables (Átomos, Moléculas y Organismos) construidos en Angular 20 con Tailwind CSS para garantizar coherencia en todo el ecosistema.
+  </app-welcome-banner>
+
+  <!-- 1. SECCIÓN ÁTOMOS -->
+  <section class="space-y-6">
+    <div class="border-b border-slate-200 pb-3">
+      <div class="flex items-center gap-2">
+        <app-badge variant="brand" size="sm">Nivel 1</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Átomos (Atomics)</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Bloques fundamentales de la interfaz de usuario.</p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Botones (app-button)</h3>
+          <p class="text-xs text-slate-500">Variantes: primary, secondary, outline, ghost en tamaños sm, md, lg.</p>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-100 px-2 py-1 rounded">Clicks: {{ sampleClickCount }}</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <app-button variant="primary" (clicked)="onButtonClick('Primary')">
+          <app-icon name="plus" size="sm"></app-icon>
+          <span>Primario</span>
+        </app-button>
+
+        <app-button variant="secondary" (clicked)="onButtonClick('Secondary')">
+          <span>Secundario</span>
+        </app-button>
+
+        <app-button variant="outline" (clicked)="onButtonClick('Outline')">
+          <app-icon name="settings" size="sm"></app-icon>
+          <span>Outline</span>
+        </app-button>
+
+        <app-button variant="ghost" (clicked)="onButtonClick('Ghost')">
+          <span>Ghost</span>
+        </app-button>
+
+        <app-button variant="primary" size="sm">
+          <span>Pequeño (sm)</span>
+        </app-button>
+
+        <app-button variant="primary" size="lg">
+          <span>Grande (lg)</span>
+        </app-button>
+
+        <app-button variant="primary" [disabled]="true">
+          <span>Deshabilitado</span>
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Badges e Indicadores (app-badge)</h3>
+        <p class="text-xs text-slate-500">Variantes de estado con soporte para puntos indicadores y pulso.</p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 pt-1">
+        <app-badge variant="brand">Brand</app-badge>
+        <app-badge variant="success" [dot]="true" [pulse]="true">Activo / Success</app-badge>
+        <app-badge variant="warning" [dot]="true">Alerta / Warning</app-badge>
+        <app-badge variant="danger" [dot]="true">Error / Danger</app-badge>
+        <app-badge variant="neutral">Neutro</app-badge>
+        <app-badge variant="brand" size="md">Tamaño MD</app-badge>
+      </div>
+    </div>
+
+    <!-- Avatars & Icons -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Avatares (app-avatar)</h3>
+          <p class="text-xs text-slate-500">Iniciales automáticas y diferentes tamaños.</p>
+        </div>
+        <div class="flex items-center gap-4 pt-1">
+          <div class="flex items-center gap-2">
+            <app-avatar initials="SM" size="sm"></app-avatar>
+            <span class="text-xs text-slate-500">SM (28px)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <app-avatar initials="MD" size="md"></app-avatar>
+            <span class="text-xs text-slate-500">MD (32px)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <app-avatar initials="LG" size="lg"></app-avatar>
+            <span class="text-xs text-slate-500">LG (40px)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Iconos SVG (app-icon)</h3>
+          <p class="text-xs text-slate-500">Iconos vectoriales en tamaños sm, md, lg, xl.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-4 pt-1 text-slate-600">
+          <div class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 flex flex-col items-center gap-1">
+            <app-icon name="dashboard" size="md"></app-icon>
+            <span class="text-[10px] text-slate-400">dashboard</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 flex flex-col items-center gap-1">
+            <app-icon name="palette" size="md"></app-icon>
+            <span class="text-[10px] text-slate-400">palette</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 flex flex-col items-center gap-1">
+            <app-icon name="extension" size="md"></app-icon>
+            <span class="text-[10px] text-slate-400">extension</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 flex flex-col items-center gap-1">
+            <app-icon name="cube" size="md"></app-icon>
+            <span class="text-[10px] text-slate-400">cube</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 flex flex-col items-center gap-1">
+            <app-icon name="code" size="md"></app-icon>
+            <span class="text-[10px] text-slate-400">code</span>
+          </div>
+          <div class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 flex flex-col items-center gap-1">
+            <app-icon name="settings" size="md"></app-icon>
+            <span class="text-[10px] text-slate-400">settings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. SECCIÓN MOLÉCULAS -->
+  <section class="space-y-6">
+    <div class="border-b border-slate-200 pb-3">
+      <div class="flex items-center gap-2">
+        <app-badge variant="success" size="sm">Nivel 2</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Moléculas (Molecules)</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Combinaciones de átomos agrupados con propósito funcional.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <app-stat-card
+        title="Tarjeta de Métrica"
+        description="Muestra información clave combinando iconos, badges y texto descriptivo."
+        badgeText="Ejemplo"
+        badgeVariant="brand"
+        iconName="palette"
+        iconColorClass="bg-brand-50 text-brand-600"
+        footerText="app-stat-card"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Rendimiento del Sistema"
+        description="Indicador de salud y tiempo de respuesta de los microfrontends remotos."
+        badgeText="99.9% Uptime"
+        badgeVariant="success"
+        iconName="database"
+        iconColorClass="bg-emerald-50 text-emerald-600"
+        footerText="Monitor en tiempo real"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Módulos Cargados"
+        description="Total de microfrontends registrados en el manifiesto de Native Federation."
+        badgeText="2 Módulos"
+        badgeVariant="neutral"
+        iconName="cube"
+        iconColorClass="bg-purple-50 text-purple-600"
+        footerText="MF Manifest"
+      ></app-stat-card>
+    </div>
+  </section>
+
+  <!-- 3. SECCIÓN ORGANISMOS -->
+  <section class="space-y-6">
+    <div class="border-b border-slate-200 pb-3">
+      <div class="flex items-center gap-2">
+        <app-badge variant="warning" size="sm">Nivel 3</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Organismos (Organisms)</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Estructuras complejas y autónomas compuestas por moléculas y átomos.</p>
+    </div>
+
+    <app-empty-state-card
+      iconName="palette"
+      title="Estado Vacío / Llamado a la Acción (app-empty-state-card)"
+      description="Utilizado para guiar al usuario cuando una sección aún no tiene contenido o requiere una acción: "
+      codeSnippet="<app-empty-state-card></app-empty-state-card>"
+    >
+      <p class="text-xs text-slate-500 mt-1">
+        Acepta título, descripción, icono y cualquier contenido inyectado por ng-content.
+      </p>
+    </app-empty-state-card>
+  </section>
+</div>

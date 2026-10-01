@@ -8,7 +8,7 @@ import { IconComponent } from '../atomics/icon.component';
   standalone: true,
   imports: [CommonModule, BadgeComponent, IconComponent],
   template: `
-    <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+    <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-card hover:shadow-card-hover transition-shadow duration-normal">
       <div class="flex items-center justify-between mb-3">
         <div [class]="iconBgClasses()">
           <app-icon [name]="iconName()" size="lg"></app-icon>

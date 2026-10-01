@@ -49,6 +49,7 @@ export class LayoutComponent {
   // Navigation items for the host shell
   navItems: NavItem[] = [
     { label: 'Panel Principal', icon: 'dashboard', route: '/' },
+    { label: 'Componentes de diseño', icon: 'palette', route: '/componentes-diseno' },
     { label: 'Administración', icon: 'extension', route: '/administracion', badge: 'Remoto' },
     { label: 'Configuración', icon: 'settings', route: '/configuracion' }
   ];

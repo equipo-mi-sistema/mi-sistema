@@ -49,6 +49,61 @@ mi-sistema/ (Repositorio del Host)
 
 ---
 
+## 🎨 Estándar de Diseño del Sistema (`tailwind.config.js`)
+
+> **Regla de Oro de Diseño**: Todo el diseño, estilos, componentes y vistas del ecosistema (`mi-sistema` y futuros microfrontends remotos) **deben adherirse estrictamente a los tokens centralizados definidos en `tailwind.config.js`**. Se prohíbe el uso de valores hexadecimales o dimensiones arbitrarias (`h-[37px]`, `text-[#123456]`, etc.) en clases inline.
+
+Todos los estilos visuales nacen de los tokens estándar configurados en [`tailwind.config.js`](tailwind.config.js):
+
+### 1. 🌈 Paleta de Colores Semántica
+- **`brand` (`50` - `950`)**: Color primario del sistema (tonalidades Sky / Deep Blue corporativo). Acciones principales, barras destacadas, logos y navegación activa.
+- **`accent` (`50` - `950`)**: Acento complementario (Indigo moderno). Estados de foco, detalles secundarios o llamados a la acción complementarios.
+- **`surface` (`50` - `950`)**: Grises semánticos (`Slate`). Fondos (`surface-50`), bordes y divisores (`surface-200` / `surface-300`), textos secundarios (`surface-500`) y títulos (`surface-900`).
+- **`feedback`**: Estados del sistema:
+  - `feedback-success` (`light`, `DEFAULT`, `dark`, `border`)
+  - `feedback-warning` (`light`, `DEFAULT`, `dark`, `border`)
+  - `feedback-danger` (`light`, `DEFAULT`, `dark`, `border`)
+  - `feedback-info` (`light`, `DEFAULT`, `dark`, `border`)
+
+### 2. 🔤 Tipografía y Jerarquía
+- **Familias**:
+  - `font-sans`: **Inter** (`'Inter', system-ui, sans-serif`) para interfaces legibles y limpias.
+  - `font-mono`: **JetBrains Mono** (`'JetBrains Mono', monospace`) para código, rutas y métricas técnicas.
+- **Escala de tamaños**:
+  - `text-2xs` (11px, `0.6875rem`): Badges compactos y pies de notas.
+  - `text-xs` (12px): Etiquetas y micro-copys.
+  - `text-sm` (14px): Texto estándar de navegación y lectura UI.
+  - `text-base` (16px): Lectura general y títulos de tarjetas.
+  - `text-lg` a `text-4xl`: Títulos y banners con tracking optimizado.
+
+### 3. 📐 Espaciados y Dimensiones
+- **Espaciados estándar**: Escala completa de Tailwind reforzada con valores comunes de interfaces: `4.5` (18px), `13` (52px), `15` (60px), `18` (72px), `68` (272px), `88` (352px).
+
+### 4. 🔲 Bordes y Radios (`borderRadius`)
+- `rounded-xs` (4px), `rounded-sm` (6px): Pequeños chips o indicadores.
+- `rounded-md` (8px), `rounded-lg` (12px): Botones, inputs y menús dropdown.
+- `rounded-xl` (16px), `rounded-2xl` (20px): Tarjetas estadísticas, paneles y banners principales.
+- `rounded-full`: Avatares y pastillas de estado completas.
+
+### 5. ⛅ Elevación y Sombras (`boxShadow`)
+- `shadow-subtle`: Sombra tenue para botones secundarios o divisores suaves.
+- `shadow-card`: Elevación estándar para tarjetas en reposo.
+- `shadow-card-hover`: Elevación interactiva al hacer hover sobre tarjetas clickeables.
+- `shadow-dropdown`: Menús desplegables y context-menus.
+- `shadow-modal`: Diálogos y ventanas modales flotantes.
+- `shadow-glow-brand` / `shadow-glow-accent`: Efecto resplandor sutil para elementos activos destacados.
+
+### 6. ⚡ Transiciones y Animaciones
+- **Duraciones**: `duration-fast` (150ms), `duration-normal` (250ms), `duration-slow` (400ms).
+- **Curvas de aceleración**: `ease-smooth` (`cubic-bezier(0.4, 0, 0.2, 1)`) y `ease-bounce-subtle` (`cubic-bezier(0.34, 1.56, 0.64, 1)`).
+- **Animaciones preconfiguradas**:
+  - `animate-fade-in`: Entrada suave de vistas y componentes.
+  - `animate-scale-in`: Aparición de modales o badges emergentes.
+  - `animate-slide-down`: Despliegue de menús.
+  - `animate-pulse-subtle`: Indicador de estado en vivo / online.
+
+---
+
 ## 🧩 Estrategia de Diseño Atómico (Atomic Design)
 
 Toda la interfaz y los componentes visuales reutilizables del proyecto se estructuran bajo los principios de **Atomic Design** dentro de `src/app/shared/components/`.

@@ -26,6 +26,14 @@ export const routes: Routes = [
         title: 'Sistema Host | Panel Principal'
       },
       {
+        path: 'componentes-diseno',
+        loadComponent: () =>
+          import('./pages/design-components/design-components.component').then(
+            (m) => m.DesignComponentsComponent
+          ),
+        title: 'Sistema Host | Componentes de Diseño'
+      },
+      {
         path: 'administracion',
         loadChildren: () =>
           loadRemoteModule('administracion', './routes')
