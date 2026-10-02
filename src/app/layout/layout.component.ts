@@ -2,15 +2,9 @@ import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BadgeComponent, ButtonComponent, IconComponent } from '../shared/components/atomics';
-import { UserProfileComponent, NavItemComponent } from '../shared/components/molecules';
+import { UserProfileComponent } from '../shared/components/molecules';
+import { MenuComponent, MenuItem } from '../shared/components/organism';
 import { AuthService } from '../core/auth/auth.service';
-
-interface NavItem {
-  label: string;
-  icon: string;
-  route: string;
-  badge?: string;
-}
 
 @Component({
   selector: 'app-layout',
@@ -22,7 +16,7 @@ interface NavItem {
     ButtonComponent,
     IconComponent,
     UserProfileComponent,
-    NavItemComponent
+    MenuComponent
   ],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css']
@@ -46,23 +40,48 @@ export class LayoutComponent {
     return (name.slice(0, 2) || 'US').toUpperCase();
   });
 
-  // Navigation items for the host shell
-  navItems: NavItem[] = [
-    { label: 'Panel Principal', icon: 'dashboard', route: '/' },
-    { label: 'Componentes de diseño', icon: 'palette', route: '/componentes-diseno' },
+  // Reusable Navigation items with sub-menus support
+  menuItems: MenuItem[] = [
+    { label: 'Panel Principal', icon: 'dashboard', route: '/', exact: true },
+    {
+      label: 'Componentes de diseño',
+      icon: 'palette',
+      children: [
+        { label: 'Atómicos', route: '/componentes-diseno/atomicos', icon: 'cube' },
+        { label: 'Moléculas', route: '/componentes-diseno/moleculas', icon: 'extension' },
+        { label: 'Organismos', route: '/componentes-diseno/organismos', icon: 'palette' }
+      ]
+    },
     { label: 'Administración', icon: 'extension', route: '/administracion', badge: 'Remoto' },
     { label: 'Configuración', icon: 'settings', route: '/configuracion' }
   ];
 
-  toggleSidebar() {
-    this.isSidebarOpen.update(open => !open);
+  toggleSidebar(): void {
+    this.isSidebarOpen.update((open) => !open);
   }
 
-  toggleMobileMenu() {
-    this.isMobileMenuOpen.update(open => !open);
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update((open) => !open);
   }
 
-  async logout() {
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
+  }
+
+  onDesktopMenuItemClick(item: MenuItem): void {
+    // Si la barra está colapsada y se pulsa una opción con submenús, expandir la barra para ver las opciones
+    if (!this.isSidebarOpen() && item.children && item.children.length > 0) {
+      this.isSidebarOpen.set(true);
+    }
+  }
+
+  onMobileMenuItemClick(item: MenuItem): void {
+    if (item.route) {
+      this.closeMobileMenu();
+    }
+  }
+
+  async logout(): Promise<void> {
     await this.authService.logout();
   }
 }

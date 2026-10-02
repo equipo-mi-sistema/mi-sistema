@@ -10,7 +10,7 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [publicOnlyGuard],
     loadComponent: () =>
-      import('./features/auth/pages/login-page.component').then(
+      import('./shared/components/organism/login-page.component').then(
         (m) => m.LoginPageComponent
       ),
     title: 'Sistema Host | Iniciar Sesión'
@@ -31,7 +31,37 @@ export const routes: Routes = [
           import('./pages/design-components/design-components.component').then(
             (m) => m.DesignComponentsComponent
           ),
-        title: 'Sistema Host | Componentes de Diseño'
+        children: [
+          {
+            path: '',
+            redirectTo: 'atomicos',
+            pathMatch: 'full'
+          },
+          {
+            path: 'atomicos',
+            loadComponent: () =>
+              import('./pages/design-components/atomics/atomics-page.component').then(
+                (m) => m.AtomicsPageComponent
+              ),
+            title: 'Sistema Host | Componentes de Diseño - Átomos'
+          },
+          {
+            path: 'moleculas',
+            loadComponent: () =>
+              import('./pages/design-components/molecules/molecules-page.component').then(
+                (m) => m.MoleculesPageComponent
+              ),
+            title: 'Sistema Host | Componentes de Diseño - Moléculas'
+          },
+          {
+            path: 'organismos',
+            loadComponent: () =>
+              import('./pages/design-components/organism/organisms-page.component').then(
+                (m) => m.OrganismsPageComponent
+              ),
+            title: 'Sistema Host | Componentes de Diseño - Organismos'
+          }
+        ]
       },
       {
         path: 'administracion',

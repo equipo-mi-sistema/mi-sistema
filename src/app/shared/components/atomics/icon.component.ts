@@ -50,6 +50,12 @@ export type IconSize = 'sm' | 'md' | 'lg' | 'xl';
         @case ('chevron-right') {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         }
+        @case ('chevron-down') {
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        }
+        @case ('chevron-up') {
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        }
         @case ('check') {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         }

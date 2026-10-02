@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
-import { AuthLayoutTemplate } from '../templates/auth-layout.template';
-import { LoginCardComponent } from '../organisms/login-card.component';
+import { AuthLayoutTemplate } from './auth-layout.template';
+import { LoginCardComponent } from './login-card.component';
 
 @Component({
   selector: 'app-login-page',

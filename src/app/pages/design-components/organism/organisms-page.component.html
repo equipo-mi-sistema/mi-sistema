@@ -1,0 +1,107 @@
+<div class="space-y-8 animate-fadeIn">
+  <!-- Section Title -->
+  <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <div>
+      <div class="flex items-center gap-2">
+        <app-badge variant="warning" size="md">Nivel 3 &bull; Organisms</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Componentes Organismos</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Estructuras completas y complejas compuestas por moléculas y átomos reutilizables.</p>
+    </div>
+  </div>
+
+  <!-- 1. Menú Reutilizable con Submenús (app-menu) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-slate-800 text-sm">Menú Multinivel Reutilizable (&lt;app-menu&gt;)</h3>
+          <app-badge variant="brand" size="sm">Nuevo Organismo</app-badge>
+        </div>
+        <p class="text-xs text-slate-500">Soporta opciones directas, submenús desplegables con chevrons dinámicos, badges, modo colapsado y acordeón.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/organism/menu/</code>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+      <!-- Demostración visual -->
+      <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <div class="text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider flex items-center justify-between">
+          <span>Vista previa interactiva</span>
+          <span class="text-[11px] font-normal text-slate-400">Haz clic para desplegar submenús</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-lg border border-slate-200/80 shadow-xs max-w-sm">
+          <app-menu
+            [items]="demoMenuItems"
+            [collapsed]="false"
+            (itemClicked)="handleDemoMenuClick($event)"
+          ></app-menu>
+        </div>
+
+        <div class="mt-3 p-2.5 rounded-lg bg-brand-50/70 border border-brand-100 text-xs text-brand-800 flex items-center justify-between">
+          <span>{{ lastMenuAction }}</span>
+        </div>
+      </div>
+
+      <!-- Guía de uso y código -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Características del Componente:</h4>
+        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+          <li><strong>Submenús automáticos:</strong> Al hacer clic en una opción con <code>children</code>, despliega o contrae sus hijos.</li>
+          <li><strong>Detección de ruta activa:</strong> Si el usuario navega a un submenú, el padre se abre automáticamente.</li>
+          <li><strong>Responsive &amp; Drawer:</strong> Se integra tanto en el sidebar de escritorio como en el drawer móvil.</li>
+          <li><strong>Completamente desacoplado:</strong> Recibe <code>[items]</code> vía Input y emite <code>(itemClicked)</code> vía Output.</li>
+        </ul>
+
+        <div class="pt-2">
+          <pre class="bg-slate-900 text-slate-200 p-3.5 rounded-xl text-[11px] font-mono overflow-x-auto"><code>&lt;app-menu
+  [items]="menuItems"
+  [collapsed]="isSidebarCollapsed"
+  (itemClicked)="onMenuItemSelected($event)"&gt;
+&lt;/app-menu&gt;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Welcome Banner (app-welcome-banner) -->
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Banner de Bienvenida (&lt;app-welcome-banner&gt;)</h3>
+        <p class="text-xs text-slate-500">Cabecera destacada con gradientes, chips y soporte para botones o contenido proyectado.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/organism/welcome-banner.component.ts</code>
+    </div>
+
+    <app-welcome-banner
+      chipText="Módulo de Organismos &bull; Sistema Host"
+      title="Organismos del Atomic Design"
+    >
+      Ejemplo del banner interactivo que proporciona contexto al usuario en las vistas principales.
+    </app-welcome-banner>
+  </div>
+
+  <!-- 3. Empty State Card (app-empty-state-card) -->
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Tarjeta de Estado Vacío (&lt;app-empty-state-card&gt;)</h3>
+        <p class="text-xs text-slate-500">Utilizado para guiar al usuario cuando una sección no posee datos o está en construcción.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/organism/empty-state-card.component.ts</code>
+    </div>
+
+    <app-empty-state-card
+      iconName="palette"
+      title="Organismo Empty State Reutilizable"
+      description="Este componente acepta icono, título, descripción y botones de acción proyectados:"
+      codeSnippet="<app-empty-state-card iconName='palette' title='...'></app-empty-state-card>"
+    >
+      <app-button variant="primary" size="sm">
+        <span>Acción Principal</span>
+      </app-button>
+    </app-empty-state-card>
+  </div>
+</div>

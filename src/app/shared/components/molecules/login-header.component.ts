@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BrandLogoComponent } from '../atoms/brand-logo.component';
-import { TypographyComponent } from '../atoms/typography.component';
+import { BrandLogoComponent } from '../atomics/brand-logo.component';
+import { TypographyComponent } from '../atomics/typography.component';
 
 @Component({
   selector: 'app-login-header',
@@ -19,4 +19,4 @@ import { TypographyComponent } from '../atoms/typography.component';
     </div>
   `
 })
-export class LoginHeaderComponent {}
+export class LoginHeaderComponent { }

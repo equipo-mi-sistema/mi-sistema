@@ -1,0 +1,117 @@
+<div class="space-y-8 animate-fadeIn">
+  <!-- Section Title -->
+  <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <div>
+      <div class="flex items-center gap-2">
+        <app-badge variant="success" size="md">Nivel 2 &bull; Molecules</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Componentes Moléculas</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Combinaciones funcionales de átomos que actúan como una unidad con propósito.</p>
+    </div>
+  </div>
+
+  <!-- 1. Stat Cards (app-stat-card) -->
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Tarjetas de Métricas (&lt;app-stat-card&gt;)</h3>
+        <p class="text-xs text-slate-500">Muestra KPIs, contadores y métricas combinando iconos, badges y tipografía.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/molecules/stat-card.component.ts</code>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <app-stat-card
+        title="Microfrontends Activos"
+        description="Módulos federados cargados dinámicamente mediante Native Federation."
+        badgeText="2 Módulos"
+        badgeVariant="brand"
+        iconName="extension"
+        iconColorClass="bg-brand-50 text-brand-600"
+        footerText="Host Shell &bull; Angular 20"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Disponibilidad del Sistema"
+        description="Salud operativa y monitoreo continuo de los servicios remotos."
+        badgeText="99.9% SLA"
+        badgeVariant="success"
+        iconName="database"
+        iconColorClass="bg-emerald-50 text-emerald-600"
+        footerText="Monitoreo en tiempo real"
+      ></app-stat-card>
+
+      <app-stat-card
+        title="Componentes Compartidos"
+        description="Biblioteca atómica disponible para el host y microfrontends remotos."
+        badgeText="10+ Comp."
+        badgeVariant="warning"
+        iconName="cube"
+        iconColorClass="bg-amber-50 text-amber-600"
+        footerText="Atomics &bull; Molecules &bull; Organisms"
+      ></app-stat-card>
+    </div>
+  </div>
+
+  <!-- 2. User Profile (app-user-profile) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Perfil de Usuario en Barra (&lt;app-user-profile&gt;)</h3>
+        <p class="text-xs text-slate-500">Píldora que combina el avatar de iniciales con información del usuario autenticado.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/molecules/user-profile.component.ts</code>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-6 pt-2">
+      <app-user-profile
+        name="Juan Miguel"
+        email="juan.miguel@empresa.com"
+        initials="JM"
+      ></app-user-profile>
+
+      <app-user-profile
+        name="Administrador Root"
+        email="admin@sistema.local"
+        initials="AD"
+      ></app-user-profile>
+
+      <app-user-profile
+        name="Developer Angular"
+        email="dev@workspace.io"
+        initials="DA"
+      ></app-user-profile>
+    </div>
+  </div>
+
+  <!-- 3. Nav Item (app-nav-item) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Item de Navegación Individual (&lt;app-nav-item&gt;)</h3>
+        <p class="text-xs text-slate-500">Molécula utilizada internamente para enlaces simples en barras y menús.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/molecules/nav-item.component.ts</code>
+    </div>
+
+    <div class="max-w-xs p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+      <app-nav-item
+        route="/componentes-diseno/moleculas"
+        label="Opción activa (Muestra)"
+        icon="extension"
+        badge="Activo"
+        (clicked)="onNavItemClick('Opción activa')"
+      ></app-nav-item>
+
+      <app-nav-item
+        route="/configuracion"
+        label="Configuración"
+        icon="settings"
+        (clicked)="onNavItemClick('Configuración')"
+      ></app-nav-item>
+    </div>
+    @if (navItemClicked !== 'Ninguno') {
+      <p class="text-xs text-slate-500">Clickeado: <strong class="text-brand-600">{{ navItemClicked }}</strong></p>
+    }
+  </div>
+</div>

@@ -1,0 +1,190 @@
+<div class="space-y-8 animate-fadeIn">
+  <!-- Section Title -->
+  <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <div>
+      <div class="flex items-center gap-2">
+        <app-badge variant="brand" size="md">Nivel 1 &bull; Atomics</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Componentes Átomos</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Bloques fundamentales e indivisibles de la interfaz de usuario.</p>
+    </div>
+    <div class="flex items-center gap-2 text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+      <span>Clicks registrados: <strong class="text-brand-600 font-mono">{{ sampleClickCount }}</strong></span>
+      <span class="text-slate-300">|</span>
+      <span>Último: <strong class="text-slate-700">{{ lastButtonClicked }}</strong></span>
+    </div>
+  </div>
+
+  <!-- 1. Botones (app-button) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Botones (&lt;app-button&gt;)</h3>
+        <p class="text-xs text-slate-500">Múltiples variantes visuales y tamaños para jerarquías de acción.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/atomics/button.component.ts</code>
+    </div>
+
+    <!-- Variantes -->
+    <div class="space-y-2">
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Variantes de estilo</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <app-button variant="primary" (clicked)="onButtonClick('Primario')">
+          <app-icon name="plus" size="sm"></app-icon>
+          <span>Primario (Brand)</span>
+        </app-button>
+
+        <app-button variant="secondary" (clicked)="onButtonClick('Secundario')">
+          <span>Secundario</span>
+        </app-button>
+
+        <app-button variant="outline" (clicked)="onButtonClick('Outline')">
+          <app-icon name="settings" size="sm"></app-icon>
+          <span>Outline</span>
+        </app-button>
+
+        <app-button variant="ghost" (clicked)="onButtonClick('Ghost')">
+          <span>Ghost</span>
+        </app-button>
+
+        <app-button variant="primary" [disabled]="true">
+          <span>Deshabilitado</span>
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Tamaños -->
+    <div class="space-y-2 pt-2 border-t border-slate-100">
+      <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Tamaños disponibles</span>
+      <div class="flex flex-wrap items-center gap-3">
+        <app-button variant="primary" size="sm" (clicked)="onButtonClick('Pequeño')">
+          <span>Pequeño (sm)</span>
+        </app-button>
+
+        <app-button variant="primary" size="md" (clicked)="onButtonClick('Mediano')">
+          <span>Mediano (md)</span>
+        </app-button>
+
+        <app-button variant="primary" size="lg" (clicked)="onButtonClick('Grande')">
+          <span>Grande (lg)</span>
+        </app-button>
+
+        <app-button variant="ghost" size="icon" title="Botón icono" (clicked)="onButtonClick('Icono')">
+          <app-icon name="settings" size="md"></app-icon>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Badges e Indicadores (app-badge) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Badges e Indicadores (&lt;app-badge&gt;)</h3>
+        <p class="text-xs text-slate-500">Etiquetas de estado semántico, contadores y badges con pulso.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/atomics/badge.component.ts</code>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <app-badge variant="brand">Brand Badge</app-badge>
+      <app-badge variant="success" [dot]="true" [pulse]="true">Activo / Exitoso</app-badge>
+      <app-badge variant="warning" [dot]="true">Pendiente / Advertencia</app-badge>
+      <app-badge variant="danger" [dot]="true">Crítico / Error</app-badge>
+      <app-badge variant="neutral">Neutro / Inactivo</app-badge>
+      <app-badge variant="brand" size="md">Tamaño Mediano</app-badge>
+    </div>
+  </div>
+
+  <!-- 3. Avatares e Iconos (app-avatar, app-icon) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Avatares -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+      <div class="border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-800 text-sm">Avatares (&lt;app-avatar&gt;)</h3>
+        <p class="text-xs text-slate-500">Iniciales automáticas y degradado de fondo corporativo.</p>
+      </div>
+      <div class="flex items-center gap-6 pt-1">
+        <div class="flex items-center gap-2">
+          <app-avatar initials="SM" size="sm"></app-avatar>
+          <div class="text-xs">
+            <p class="font-semibold text-slate-700">Small</p>
+            <p class="text-slate-400">28px</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <app-avatar initials="MD" size="md"></app-avatar>
+          <div class="text-xs">
+            <p class="font-semibold text-slate-700">Medium</p>
+            <p class="text-slate-400">32px</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <app-avatar initials="LG" size="lg"></app-avatar>
+          <div class="text-xs">
+            <p class="font-semibold text-slate-700">Large</p>
+            <p class="text-slate-400">40px</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Iconos -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+      <div class="border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-800 text-sm">Iconos SVG (&lt;app-icon&gt;)</h3>
+        <p class="text-xs text-slate-500">Iconografía vectorial SVG estandarizada y reactiva.</p>
+      </div>
+      <div class="grid grid-cols-4 sm:grid-cols-6 gap-2 text-slate-600">
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="dashboard" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">dashboard</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="palette" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">palette</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="extension" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">extension</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="cube" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">cube</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="code" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">code</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="settings" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">settings</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="chevron-right" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">chevron-r</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="chevron-down" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">chevron-d</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="check" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">check</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="database" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">database</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="logout" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">logout</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="menu" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">menu</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
