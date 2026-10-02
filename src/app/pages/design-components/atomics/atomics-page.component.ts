@@ -6,10 +6,13 @@ import {
   BadgeComponent,
   ButtonComponent,
   CheckboxComponent,
+  DividerComponent,
   IconComponent,
   InputComponent,
+  SkeletonComponent,
   SpinnerComponent,
-  TextareaComponent
+  TextareaComponent,
+  ToggleComponent
 } from '../../../shared/components/atomics';
 
 @Component({
@@ -25,7 +28,10 @@ import {
     InputComponent,
     TextareaComponent,
     CheckboxComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    ToggleComponent,
+    SkeletonComponent,
+    DividerComponent
   ],
   templateUrl: './atomics-page.component.html'
 })
@@ -41,6 +47,10 @@ export class AtomicsPageComponent {
   checkbox1 = true;
   checkbox2 = false;
   checkboxIndeterminate = true;
+
+  // Toggles
+  toggleActive = true;
+  toggleMfa = false;
 
   onButtonClick(label: string): void {
     this.sampleClickCount++;

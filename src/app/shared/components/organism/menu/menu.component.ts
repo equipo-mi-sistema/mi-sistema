@@ -20,7 +20,10 @@ import { MenuItem } from './menu.model';
   selector: 'app-menu',
   standalone: true,
   imports: [CommonModule, RouterModule, IconComponent, BadgeComponent],
-  templateUrl: './menu.component.html'
+  templateUrl: './menu.component.html',
+  host: {
+    class: 'block w-full'
+  }
 })
 export class MenuComponent implements OnInit {
   private readonly router = inject(Router);

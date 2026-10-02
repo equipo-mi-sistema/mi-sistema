@@ -1,16 +1,104 @@
 <div class="space-y-6 sm:space-y-8 animate-fadeIn">
-  <!-- Section Title -->
-  <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-    <div>
-      <div class="flex items-center gap-2">
-        <app-badge variant="success" size="md">Nivel 2 &bull; Molecules</app-badge>
-        <h2 class="text-xl font-bold text-slate-800">Componentes Moléculas</h2>
+  <!-- Section Title & Breadcrumb Demo -->
+  <div class="border-b border-slate-200 pb-4 space-y-3">
+    <app-breadcrumb [items]="sampleBreadcrumbs"></app-breadcrumb>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <app-badge variant="success" size="md">Nivel 2 &bull; Molecules</app-badge>
+          <h2 class="text-xl font-bold text-slate-800">Componentes Moléculas</h2>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Combinaciones funcionales de átomos que actúan como una unidad con propósito.</p>
       </div>
-      <p class="text-xs text-slate-500 mt-1">Combinaciones funcionales de átomos que actúan como una unidad con propósito.</p>
     </div>
   </div>
 
-  <!-- 1. Alertas de Notificación (app-alert) -->
+  <!-- 1. Búsqueda y Dropdowns (app-search-input, app-dropdown, app-tooltip) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Búsqueda, Menús Flotantes y Tooltips</h3>
+        <p class="text-xs text-slate-500">Búsqueda con debounce, dropdown contextual para tablas y tooltips flotantes.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">search / dropdown / tooltip</code>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
+      <!-- Search Input -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Búsqueda con Debounce (300ms)</label>
+        <app-search-input
+          placeholder="Escribe para buscar..."
+          (search)="onSearch($event)"
+        ></app-search-input>
+        <span class="text-[11px] text-slate-400 mt-1 block truncate">
+          Consulta: <strong>{{ searchQuery || 'Ninguna' }}</strong>
+        </span>
+      </div>
+
+      <!-- Dropdown Contextual -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Menú de Acciones (Dropdown)</label>
+        <div class="flex items-center gap-4">
+          <app-dropdown
+            [items]="dropdownActions"
+            trigger="button"
+            buttonText="Opciones del registro"
+            (selected)="onActionSelect($event)"
+          ></app-dropdown>
+
+          <app-dropdown
+            [items]="dropdownActions"
+            trigger="icon"
+            (selected)="onActionSelect($event)"
+          ></app-dropdown>
+        </div>
+        <span class="text-[11px] text-slate-400 mt-1 block truncate">
+          {{ lastActionSelected }}
+        </span>
+      </div>
+
+      <!-- Tooltip -->
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tooltips Informativos</label>
+        <div class="flex items-center gap-3 pt-1">
+          <app-tooltip text="Ver información del microfrontend" position="top">
+            <span class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-medium text-slate-700 cursor-pointer">
+              Hover Arriba
+            </span>
+          </app-tooltip>
+
+          <app-tooltip text="Exportar datos a Excel" position="bottom">
+            <span class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-medium text-slate-700 cursor-pointer">
+              Hover Abajo
+            </span>
+          </app-tooltip>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Paginador (app-pagination) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-1">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Control de Paginación (&lt;app-pagination&gt;)</h3>
+        <p class="text-xs text-slate-500">Permite navegar entre bloques de datos y ajustar la cantidad de registros por página.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-pagination</code>
+    </div>
+
+    <app-pagination
+      [total]="totalRecords"
+      [(pageSize)]="pageSize"
+      [(currentPage)]="currentPage"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+    ></app-pagination>
+  </div>
+
+  <!-- 3. Alertas de Notificación (app-alert) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
@@ -61,7 +149,7 @@
     </div>
   </div>
 
-  <!-- 2. Input de Selección (app-select) -->
+  <!-- 4. Input de Selección (app-select) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
@@ -101,7 +189,7 @@
     </div>
   </div>
 
-  <!-- 3. Accordion Item Individual (app-accordion-item) -->
+  <!-- 5. Accordion Item Individual (app-accordion-item) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
@@ -131,7 +219,7 @@
     </div>
   </div>
 
-  <!-- 4. Stat Cards (app-stat-card) -->
+  <!-- 6. Stat Cards (app-stat-card) -->
   <div class="space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
       <div>
@@ -165,7 +253,7 @@
       <app-stat-card
         title="Componentes Compartidos"
         description="Biblioteca atómica disponible para el host y microfrontends remotos."
-        badgeText="15+ Comp."
+        badgeText="20+ Comp."
         badgeVariant="warning"
         iconName="cube"
         iconColorClass="bg-amber-50 text-amber-600"
@@ -174,7 +262,7 @@
     </div>
   </div>
 
-  <!-- 5. User Profile (app-user-profile) -->
+  <!-- 7. User Profile (app-user-profile) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>

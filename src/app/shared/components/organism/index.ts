@@ -3,3 +3,7 @@ export * from './empty-state-card.component';
 export * from './menu';
 export * from './modal';
 export * from './accordion';
+export * from './data-table';
+export * from './toast';
+export * from './drawer';
+export * from './file-upload';

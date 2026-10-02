@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BadgeComponent, ButtonComponent, IconComponent } from '../shared/components/atomics';
 import { UserProfileComponent } from '../shared/components/molecules';
-import { MenuComponent, MenuItem } from '../shared/components/organism';
+import { MenuComponent, MenuItem, ToastContainerComponent } from '../shared/components/organism';
 import { AuthService } from '../core/auth/auth.service';
 
 @Component({
@@ -16,7 +16,8 @@ import { AuthService } from '../core/auth/auth.service';
     ButtonComponent,
     IconComponent,
     UserProfileComponent,
-    MenuComponent
+    MenuComponent,
+    ToastContainerComponent
   ],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css']

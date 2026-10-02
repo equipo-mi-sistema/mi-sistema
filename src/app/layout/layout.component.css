@@ -1,5 +1,8 @@
 /* Layout component scoped styles */
 :host {
   display: block;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
+

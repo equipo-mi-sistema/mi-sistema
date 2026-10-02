@@ -10,7 +10,149 @@
     </div>
   </div>
 
-  <!-- 1. Modales de Notificación y Confirmación (app-modal, app-confirm-modal, app-notification-modal) -->
+  <!-- 1. Tabla de Datos Empresarial (app-data-table) -->
+  <div class="space-y-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Tabla de Datos Empresarial (&lt;app-data-table&gt;)</h3>
+        <p class="text-xs text-slate-500">Cabeceras ordenables, selección por checkboxes, badges automáticos y scroll responsivo.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">data-table/</code>
+    </div>
+
+    @if (selectedTableUsers.length > 0) {
+      <div class="text-xs bg-brand-50 text-brand-800 p-2.5 rounded-xl border border-brand-100 flex items-center justify-between">
+        <span>Filas seleccionadas: <strong>{{ selectedTableUsers.length }}</strong></span>
+        <button
+          type="button"
+          class="text-xs text-brand-600 underline font-semibold cursor-pointer"
+          (click)="triggerToast('info')"
+        >
+          Acción por lote
+        </button>
+      </div>
+    }
+
+    <app-data-table
+      [columns]="tableColumns"
+      [data]="sampleUsers"
+      [selectable]="true"
+      (sortChange)="onTableSort($event)"
+      (selectionChange)="onTableSelection($event)"
+    ></app-data-table>
+  </div>
+
+  <!-- 2. Sistema Global de Toasts y Drawer Lateral -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Toasts Demo -->
+    <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Sistema Global de Toasts (&lt;ToastService&gt;)</h3>
+          <p class="text-xs text-slate-500">Notificaciones emergentes no bloqueantes con auto-cierre y animaciones.</p>
+        </div>
+        <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">toast/</code>
+      </div>
+
+      <p class="text-xs text-slate-500">
+        Haz clic en cualquiera de los botones para disparar una notificación flotante desde el servicio global:
+      </p>
+
+      <div class="flex flex-wrap items-center gap-2.5">
+        <app-button variant="primary" size="sm" (clicked)="triggerToast('success')">
+          <span>Toast Éxito</span>
+        </app-button>
+
+        <app-button variant="secondary" size="sm" (clicked)="triggerToast('error')">
+          <span>Toast Error</span>
+        </app-button>
+
+        <app-button variant="outline" size="sm" (clicked)="triggerToast('warning')">
+          <span>Toast Advertencia</span>
+        </app-button>
+
+        <app-button variant="ghost" size="sm" (clicked)="triggerToast('info')">
+          <span>Toast Info</span>
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Drawer Demo -->
+    <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Panel Lateral Offcanvas (&lt;app-drawer&gt;)</h3>
+          <p class="text-xs text-slate-500">Ideal para formularios de edición rápida o filtros sin salir de la página.</p>
+        </div>
+        <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">drawer/</code>
+      </div>
+
+      <p class="text-xs text-slate-500">
+        Abre un panel deslizante desde el borde derecho con backdrop desenfocado y tecla ESC:
+      </p>
+
+      <div>
+        <app-button variant="primary" size="sm" (clicked)="isDrawerOpen = true">
+          <span>Abrir Drawer de Edición</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Component Instance -->
+  <app-drawer
+    [(isOpen)]="isDrawerOpen"
+    title="Editar Información de Usuario"
+    size="md"
+  >
+    <div class="space-y-4 pt-1">
+      <p class="text-xs text-slate-500">
+        Modifica los campos y pulsa guardar para sincronizar cambios a través del servicio reactivo.
+      </p>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo</label>
+        <app-input value="Juan Miguel"></app-input>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+        <app-input value="juan.miguel@empresa.com" type="email"></app-input>
+      </div>
+
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+        Los cambios realizados aquí se reflejan instantáneamente en todo el shell del sistema.
+      </div>
+    </div>
+
+    <div drawer-footer class="flex items-center gap-2">
+      <app-button variant="ghost" size="sm" (clicked)="isDrawerOpen = false">
+        <span>Cancelar</span>
+      </app-button>
+      <app-button variant="primary" size="sm" (clicked)="isDrawerOpen = false; triggerToast('success')">
+        <span>Guardar Cambios</span>
+      </app-button>
+    </div>
+  </app-drawer>
+
+  <!-- 3. Carga de Archivos Drag & Drop (app-file-upload) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Zona de Carga Drag &amp; Drop (&lt;app-file-upload&gt;)</h3>
+        <p class="text-xs text-slate-500">Permite arrastrar archivos, valida pesos máximos y muestra una lista con eliminación.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">file-upload/</code>
+    </div>
+
+    <app-file-upload
+      [multiple]="true"
+      [maxSizeMb]="15"
+      (filesSelected)="onFilesUploaded($event)"
+    ></app-file-upload>
+  </div>
+
+  <!-- 4. Modales de Notificación y Confirmación (app-modal, app-confirm-modal, app-notification-modal) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
       <div>
@@ -98,7 +240,7 @@
     (closed)="lastModalResult = 'Notificación cerrada.'"
   ></app-notification-modal>
 
-  <!-- 2. Acordeón Completo (app-accordion) -->
+  <!-- 5. Acordeón Completo (app-accordion) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
       <div>
@@ -139,18 +281,10 @@
       >
         A través de la carpeta compartida <code>src/app/shared/components</code>, exponiendo índices de barril limpios para que cualquier página o módulo los consuma sin duplicar código CSS ni dependencias.
       </app-accordion-item>
-
-      <app-accordion-item
-        title="¿Qué ventajas ofrece Angular 20 Standalone?"
-        subtitle="Rendimiento y arquitectura limpia"
-        icon="extension"
-      >
-        Permite prescindir completamente de <code>NgModule</code>, reduciendo el tamaño del bundle, agilizando el tree-shaking y permitiendo el uso nativo de Signals e inputs modernos.
-      </app-accordion-item>
     </app-accordion>
   </div>
 
-  <!-- 3. Menú Reutilizable con Submenús (app-menu) -->
+  <!-- 6. Menú Reutilizable con Submenús (app-menu) -->
   <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
       <div>
@@ -193,45 +327,5 @@
         </ul>
       </div>
     </div>
-  </div>
-
-  <!-- 4. Welcome Banner (app-welcome-banner) -->
-  <div class="space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-      <div>
-        <h3 class="font-semibold text-slate-800 text-sm">Banner de Bienvenida (&lt;app-welcome-banner&gt;)</h3>
-        <p class="text-xs text-slate-500">Cabecera destacada con gradientes, chips y soporte para botones o contenido proyectado.</p>
-      </div>
-      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-welcome-banner</code>
-    </div>
-
-    <app-welcome-banner
-      chipText="Módulo de Organismos &bull; Sistema Host"
-      title="Organismos del Atomic Design"
-    >
-      Ejemplo del banner interactivo que proporciona contexto al usuario en las vistas principales.
-    </app-welcome-banner>
-  </div>
-
-  <!-- 5. Empty State Card (app-empty-state-card) -->
-  <div class="space-y-4">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-      <div>
-        <h3 class="font-semibold text-slate-800 text-sm">Tarjeta de Estado Vacío (&lt;app-empty-state-card&gt;)</h3>
-        <p class="text-xs text-slate-500">Utilizado para guiar al usuario cuando una sección no posee datos o está en construcción.</p>
-      </div>
-      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-empty-state-card</code>
-    </div>
-
-    <app-empty-state-card
-      iconName="palette"
-      title="Organismo Empty State Reutilizable"
-      description="Este componente acepta icono, título, descripción y botones de acción proyectados:"
-      codeSnippet="<app-empty-state-card iconName='palette' title='...'></app-empty-state-card>"
-    >
-      <app-button variant="primary" size="sm">
-        <span>Acción Principal</span>
-      </app-button>
-    </app-empty-state-card>
   </div>
 </div>

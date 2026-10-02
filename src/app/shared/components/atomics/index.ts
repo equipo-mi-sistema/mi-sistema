@@ -6,3 +6,6 @@ export * from './input.component';
 export * from './textarea.component';
 export * from './checkbox.component';
 export * from './spinner.component';
+export * from './toggle.component';
+export * from './skeleton.component';
+export * from './divider.component';
