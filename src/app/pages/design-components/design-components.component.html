@@ -7,17 +7,17 @@
     Explora la biblioteca de componentes reutilizables (Átomos, Moléculas y Organismos) construidos en Angular 20 con Tailwind CSS para garantizar coherencia en todo el ecosistema.
   </app-welcome-banner>
 
-  <!-- Navigation Tabs for Sub-pages -->
-  <div class="flex items-center gap-2 border-b border-slate-200 pb-px overflow-x-auto">
+  <!-- Navigation Tabs for Sub-pages (Desplazable horizontalmente en móviles sin romper líneas) -->
+  <div class="flex items-center gap-2 border-b border-slate-200 pb-px overflow-x-auto scroll-smooth">
     @for (tab of tabs; track tab.route) {
       <a
         [routerLink]="tab.route"
         routerLinkActive="border-brand-600 text-brand-600 bg-white shadow-xs font-semibold"
-        class="flex items-center gap-2 px-4 py-2.5 border-b-2 border-transparent text-sm font-medium text-slate-500 hover:text-slate-800 hover:border-slate-300 rounded-t-xl transition-all cursor-pointer"
+        class="flex-shrink-0 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 border-b-2 border-transparent text-xs sm:text-sm font-medium text-slate-500 hover:text-slate-800 hover:border-slate-300 rounded-t-xl transition-all cursor-pointer whitespace-nowrap"
       >
         <app-icon [name]="tab.icon" size="sm"></app-icon>
         <span>{{ tab.label }}</span>
-        <app-badge variant="neutral" size="sm">{{ tab.badge }}</app-badge>
+        <app-badge variant="neutral" size="sm" class="hidden sm:inline-flex">{{ tab.badge }}</app-badge>
       </a>
     }
   </div>

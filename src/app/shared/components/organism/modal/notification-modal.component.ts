@@ -17,12 +17,12 @@ export type NotificationType = 'success' | 'info' | 'warning' | 'error';
       [showCloseButton]="true"
       (closed)="onClose()"
     >
-      <div class="flex flex-col items-center text-center py-2">
-        <div [class]="iconBgClasses()" class="p-4 rounded-3xl mb-4 flex items-center justify-center">
+      <div class="flex flex-col items-center text-center py-2 px-1">
+        <div [class]="iconBgClasses()" class="p-3.5 sm:p-4 rounded-3xl mb-3 sm:mb-4 flex items-center justify-center">
           <app-icon [name]="iconName()" size="xl"></app-icon>
         </div>
 
-        <p class="text-sm text-slate-600 leading-relaxed mb-6">{{ message() }}</p>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5 sm:mb-6 max-w-sm">{{ message() }}</p>
 
         <app-button
           variant="primary"

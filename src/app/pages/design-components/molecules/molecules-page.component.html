@@ -1,4 +1,4 @@
-<div class="space-y-8 animate-fadeIn">
+<div class="space-y-6 sm:space-y-8 animate-fadeIn">
   <!-- Section Title -->
   <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
     <div>
@@ -11,13 +11,13 @@
   </div>
 
   <!-- 1. Alertas de Notificación (app-alert) -->
-  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Alertas de Notificaciones (&lt;app-alert&gt;)</h3>
         <p class="text-xs text-slate-500">Alertas contextuales (info, success, warning, danger) con soporte para cierre interactivo.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-alert</code>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-alert</code>
     </div>
 
     @if (lastAlertDismissed) {
@@ -26,7 +26,7 @@
       </div>
     }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 pt-1">
       <app-alert
         variant="info"
         title="Información del Sistema"
@@ -62,23 +62,23 @@
   </div>
 
   <!-- 2. Input de Selección (app-select) -->
-  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Input Desplegable Select (&lt;app-select&gt;)</h3>
         <p class="text-xs text-slate-500">Select estilizado con opciones dinámicas, estados de error y deshabilitado.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-select</code>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-select</code>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 pt-2">
       <div>
         <app-select
           label="Rol del Usuario"
           [options]="roleOptions"
           [(value)]="selectedRole"
         ></app-select>
-        <span class="text-[11px] text-slate-400 mt-1 block">Rol seleccionado: <strong>{{ selectedRole }}</strong></span>
+        <span class="text-[11px] text-slate-400 mt-1 block truncate">Rol: <strong>{{ selectedRole }}</strong></span>
       </div>
 
       <div>
@@ -102,13 +102,13 @@
   </div>
 
   <!-- 3. Accordion Item Individual (app-accordion-item) -->
-  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Ítem de Acordeón Colapsable (&lt;app-accordion-item&gt;)</h3>
         <p class="text-xs text-slate-500">Molécula individual para expandir y contraer paneles con animación.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-accordion-item</code>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-accordion-item</code>
     </div>
 
     <div class="space-y-3 pt-1 max-w-2xl">
@@ -133,15 +133,15 @@
 
   <!-- 4. Stat Cards (app-stat-card) -->
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Tarjetas de Métricas (&lt;app-stat-card&gt;)</h3>
         <p class="text-xs text-slate-500">Muestra KPIs, contadores y métricas combinando iconos, badges y tipografía.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-stat-card</code>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-stat-card</code>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
       <app-stat-card
         title="Microfrontends Activos"
         description="Módulos federados cargados dinámicamente mediante Native Federation."
@@ -175,16 +175,16 @@
   </div>
 
   <!-- 5. User Profile (app-user-profile) -->
-  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Perfil de Usuario en Barra (&lt;app-user-profile&gt;)</h3>
         <p class="text-xs text-slate-500">Píldora que combina el avatar de iniciales con información del usuario autenticado.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-user-profile</code>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">app-user-profile</code>
     </div>
 
-    <div class="flex flex-wrap items-center gap-6 pt-2">
+    <div class="flex flex-wrap items-center gap-4 sm:gap-6 pt-2">
       <app-user-profile
         name="Juan Miguel"
         email="juan.miguel@empresa.com"

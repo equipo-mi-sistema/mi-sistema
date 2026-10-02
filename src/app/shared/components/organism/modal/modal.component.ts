@@ -18,7 +18,7 @@ export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+        class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
         role="dialog"
         aria-modal="true"
       >
@@ -28,17 +28,17 @@ export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
           (click)="onBackdropClick()"
         ></div>
 
-        <!-- Contenedor del Modal -->
+        <!-- Contenedor del Modal Responsivo -->
         <div
           [class]="modalClasses()"
-          class="relative w-full bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-10 transition-all transform animate-scaleUp"
+          class="relative w-full max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-10 transition-all transform animate-scaleUp m-auto max-h-[90vh] flex flex-col"
         >
           <!-- Header con Título Visible -->
           @if (title() || showCloseButton()) {
-            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-              <div class="flex items-center gap-2.5">
+            <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
+              <div class="flex items-center gap-2.5 min-w-0 pr-2">
                 @if (title()) {
-                  <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug truncate">
                     {{ title() }}
                   </h3>
                 }
@@ -49,7 +49,7 @@ export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
                 <button
                   type="button"
                   (click)="close()"
-                  class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer ml-auto"
+                  class="p-2 sm:p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer flex-shrink-0"
                   aria-label="Cerrar modal"
                 >
                   <app-icon name="close" size="sm"></app-icon>
@@ -58,13 +58,13 @@ export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
             </div>
           }
 
-          <!-- Body -->
-          <div class="p-6 text-sm text-slate-600 max-h-[75vh] overflow-y-auto">
+          <!-- Body con scroll interno automático en pantallas pequeñas -->
+          <div class="p-4 sm:p-6 text-sm text-slate-600 overflow-y-auto flex-1">
             <ng-content></ng-content>
           </div>
 
-          <!-- Footer proyectado -->
-          <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 empty:hidden">
+          <!-- Footer proyectado adaptable a mobile -->
+          <div class="px-4 sm:px-6 py-3 sm:py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5 sm:gap-3 empty:hidden flex-shrink-0">
             <ng-content select="[modal-footer]"></ng-content>
           </div>
         </div>
@@ -84,10 +84,10 @@ export class ModalComponent {
 
   modalClasses = computed(() => {
     const sizeMap: Record<ModalSize, string> = {
-      sm: 'max-w-sm',
-      md: 'max-w-md',
-      lg: 'max-w-lg',
-      xl: 'max-w-2xl'
+      sm: 'sm:max-w-sm',
+      md: 'sm:max-w-md',
+      lg: 'sm:max-w-lg',
+      xl: 'sm:max-w-2xl'
     };
     return sizeMap[this.size()];
   });

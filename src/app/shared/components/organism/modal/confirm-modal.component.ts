@@ -19,8 +19,8 @@ export type ConfirmVariant = 'danger' | 'warning' | 'brand';
       [closeOnEsc]="!loading()"
       (closed)="onCancel()"
     >
-      <div class="flex items-start gap-4 py-1">
-        <div [class]="iconBgClasses()" class="p-3 rounded-2xl flex-shrink-0 flex items-center justify-center">
+      <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3.5 sm:gap-4 py-1">
+        <div [class]="iconBgClasses()" class="p-3.5 sm:p-3 rounded-2xl flex-shrink-0 flex items-center justify-center">
           <app-icon [name]="iconName()" size="lg"></app-icon>
         </div>
 
@@ -30,10 +30,11 @@ export type ConfirmVariant = 'danger' | 'warning' | 'brand';
         </div>
       </div>
 
-      <div modal-footer class="flex items-center justify-end gap-2.5 w-full">
+      <div modal-footer class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-2.5 w-full">
         <app-button
           variant="outline"
           size="sm"
+          class="w-full sm:w-auto"
           [disabled]="loading()"
           (clicked)="onCancel()"
         >
@@ -43,6 +44,7 @@ export type ConfirmVariant = 'danger' | 'warning' | 'brand';
         <app-button
           [variant]="buttonVariant()"
           size="sm"
+          class="w-full sm:w-auto"
           [disabled]="loading()"
           (clicked)="onConfirm()"
         >
