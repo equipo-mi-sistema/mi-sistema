@@ -10,14 +10,135 @@
     </div>
   </div>
 
-  <!-- 1. Stat Cards (app-stat-card) -->
+  <!-- 1. Alertas de Notificación (app-alert) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Alertas de Notificaciones (&lt;app-alert&gt;)</h3>
+        <p class="text-xs text-slate-500">Alertas contextuales (info, success, warning, danger) con soporte para cierre interactivo.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-alert</code>
+    </div>
+
+    @if (lastAlertDismissed) {
+      <div class="text-xs text-brand-600 bg-brand-50 p-2.5 rounded-lg border border-brand-100">
+        {{ lastAlertDismissed }}
+      </div>
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+      <app-alert
+        variant="info"
+        title="Información del Sistema"
+        message="Hay una nueva versión del shell disponible para su instalación."
+        [dismissible]="true"
+        (dismissed)="onAlertDismiss('info')"
+      ></app-alert>
+
+      <app-alert
+        variant="success"
+        title="Operación Exitosa"
+        message="Los datos fueron sincronizados correctamente con Firebase Auth."
+        [dismissible]="true"
+        (dismissed)="onAlertDismiss('success')"
+      ></app-alert>
+
+      <app-alert
+        variant="warning"
+        title="Advertencia de Sesión"
+        message="Tu sesión expirará en 5 minutos por inactividad."
+        [dismissible]="true"
+        (dismissed)="onAlertDismiss('warning')"
+      ></app-alert>
+
+      <app-alert
+        variant="danger"
+        title="Error de Conexión"
+        message="No se pudo contactar con el microfrontend remoto 'administracion'."
+        [dismissible]="true"
+        (dismissed)="onAlertDismiss('danger')"
+      ></app-alert>
+    </div>
+  </div>
+
+  <!-- 2. Input de Selección (app-select) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Input Desplegable Select (&lt;app-select&gt;)</h3>
+        <p class="text-xs text-slate-500">Select estilizado con opciones dinámicas, estados de error y deshabilitado.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-select</code>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
+      <div>
+        <app-select
+          label="Rol del Usuario"
+          [options]="roleOptions"
+          [(value)]="selectedRole"
+        ></app-select>
+        <span class="text-[11px] text-slate-400 mt-1 block">Rol seleccionado: <strong>{{ selectedRole }}</strong></span>
+      </div>
+
+      <div>
+        <app-select
+          label="Con Error de Validación"
+          [options]="roleOptions"
+          error="Debes seleccionar un perfil válido"
+          placeholder="Selecciona obligatorio"
+        ></app-select>
+      </div>
+
+      <div>
+        <app-select
+          label="Select Deshabilitado"
+          [options]="roleOptions"
+          [disabled]="true"
+          placeholder="No disponible"
+        ></app-select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Accordion Item Individual (app-accordion-item) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Ítem de Acordeón Colapsable (&lt;app-accordion-item&gt;)</h3>
+        <p class="text-xs text-slate-500">Molécula individual para expandir y contraer paneles con animación.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-accordion-item</code>
+    </div>
+
+    <div class="space-y-3 pt-1 max-w-2xl">
+      <app-accordion-item
+        title="¿Qué es la arquitectura de Microfrontends?"
+        subtitle="Conceptos clave de Native Federation"
+        icon="extension"
+        [isOpen]="true"
+      >
+        Los microfrontends permiten descomponer una aplicación web monolítica en múltiples aplicaciones más pequeñas y autónomas que pueden ser desarrolladas, probadas y desplegadas de manera independiente.
+      </app-accordion-item>
+
+      <app-accordion-item
+        title="¿Cómo se comunican los módulos independientes?"
+        subtitle="Estrategias de estado compartido"
+        icon="database"
+      >
+        Mediante servicios compartidos a través de bibliotecas atómicas, Custom Events de navegador o stores reactivos distribuidos.
+      </app-accordion-item>
+    </div>
+  </div>
+
+  <!-- 4. Stat Cards (app-stat-card) -->
   <div class="space-y-4">
     <div class="flex items-center justify-between">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Tarjetas de Métricas (&lt;app-stat-card&gt;)</h3>
         <p class="text-xs text-slate-500">Muestra KPIs, contadores y métricas combinando iconos, badges y tipografía.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/molecules/stat-card.component.ts</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-stat-card</code>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -44,7 +165,7 @@
       <app-stat-card
         title="Componentes Compartidos"
         description="Biblioteca atómica disponible para el host y microfrontends remotos."
-        badgeText="10+ Comp."
+        badgeText="15+ Comp."
         badgeVariant="warning"
         iconName="cube"
         iconColorClass="bg-amber-50 text-amber-600"
@@ -53,14 +174,14 @@
     </div>
   </div>
 
-  <!-- 2. User Profile (app-user-profile) -->
+  <!-- 5. User Profile (app-user-profile) -->
   <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Perfil de Usuario en Barra (&lt;app-user-profile&gt;)</h3>
         <p class="text-xs text-slate-500">Píldora que combina el avatar de iniciales con información del usuario autenticado.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/molecules/user-profile.component.ts</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-user-profile</code>
     </div>
 
     <div class="flex flex-wrap items-center gap-6 pt-2">
@@ -75,43 +196,6 @@
         email="admin@sistema.local"
         initials="AD"
       ></app-user-profile>
-
-      <app-user-profile
-        name="Developer Angular"
-        email="dev@workspace.io"
-        initials="DA"
-      ></app-user-profile>
     </div>
-  </div>
-
-  <!-- 3. Nav Item (app-nav-item) -->
-  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-      <div>
-        <h3 class="font-semibold text-slate-800 text-sm">Item de Navegación Individual (&lt;app-nav-item&gt;)</h3>
-        <p class="text-xs text-slate-500">Molécula utilizada internamente para enlaces simples en barras y menús.</p>
-      </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/molecules/nav-item.component.ts</code>
-    </div>
-
-    <div class="max-w-xs p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-      <app-nav-item
-        route="/componentes-diseno/moleculas"
-        label="Opción activa (Muestra)"
-        icon="extension"
-        badge="Activo"
-        (clicked)="onNavItemClick('Opción activa')"
-      ></app-nav-item>
-
-      <app-nav-item
-        route="/configuracion"
-        label="Configuración"
-        icon="settings"
-        (clicked)="onNavItemClick('Configuración')"
-      ></app-nav-item>
-    </div>
-    @if (navItemClicked !== 'Ninguno') {
-      <p class="text-xs text-slate-500">Clickeado: <strong class="text-brand-600">{{ navItemClicked }}</strong></p>
-    }
   </div>
 </div>

@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BadgeComponent, ButtonComponent } from '../../../shared/components/atomics';
+import { AccordionItemComponent } from '../../../shared/components/molecules';
 import {
-  WelcomeBannerComponent,
+  AccordionComponent,
+  ConfirmModalComponent,
   EmptyStateCardComponent,
   MenuComponent,
-  MenuItem
+  MenuItem,
+  ModalComponent,
+  NotificationModalComponent,
+  WelcomeBannerComponent
 } from '../../../shared/components/organism';
 
 @Component({
@@ -17,12 +22,28 @@ import {
     ButtonComponent,
     WelcomeBannerComponent,
     EmptyStateCardComponent,
-    MenuComponent
+    MenuComponent,
+    AccordionComponent,
+    AccordionItemComponent,
+    ModalComponent,
+    ConfirmModalComponent,
+    NotificationModalComponent
   ],
   templateUrl: './organisms-page.component.html'
 })
 export class OrganismsPageComponent {
   lastMenuAction = 'Ninguna acción aún';
+
+  // Estados de Modales
+  isBaseModalOpen = false;
+  isConfirmModalOpen = false;
+  isConfirmLoading = false;
+  isNotificationModalOpen = false;
+  notificationType: 'success' | 'info' | 'warning' | 'error' = 'success';
+  lastModalResult = 'Sin acciones recientes de modal';
+
+  // Configuración de acordeón
+  accordionModeActive = true;
 
   // Menú de demostración interactiva
   demoMenuItems: MenuItem[] = [
@@ -49,5 +70,27 @@ export class OrganismsPageComponent {
 
   handleDemoMenuClick(item: MenuItem): void {
     this.lastMenuAction = `Item seleccionado: ${item.label} (Ruta: ${item.route || 'Submenú'})`;
+  }
+
+  openConfirmModal(): void {
+    this.isConfirmModalOpen = true;
+  }
+
+  handleConfirmAction(): void {
+    this.isConfirmLoading = true;
+    setTimeout(() => {
+      this.isConfirmLoading = false;
+      this.isConfirmModalOpen = false;
+      this.lastModalResult = 'Elemento eliminado con éxito mediante ConfirmModal.';
+    }, 1500);
+  }
+
+  handleCancelAction(): void {
+    this.lastModalResult = 'Acción cancelada por el usuario.';
+  }
+
+  openNotification(type: 'success' | 'info' | 'warning' | 'error'): void {
+    this.notificationType = type;
+    this.isNotificationModalOpen = true;
   }
 }

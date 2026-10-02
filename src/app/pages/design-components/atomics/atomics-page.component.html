@@ -15,14 +15,154 @@
     </div>
   </div>
 
-  <!-- 1. Botones (app-button) -->
+  <!-- 1. Campos de Entrada (app-input) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Campos de Entrada de Texto (&lt;app-input&gt;)</h3>
+        <p class="text-xs text-slate-500">Soporta tipos text, email, password, iconos decorativos y estados de validación.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-input</code>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-2">
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Input Estándar</label>
+        <app-input
+          [(value)]="inputTextValue"
+          placeholder="Escribe tu nombre..."
+        ></app-input>
+        <span class="text-[11px] text-slate-400 mt-1 block">Valor: {{ inputTextValue }}</span>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Con Icono Izquierdo</label>
+        <app-input
+          [(value)]="inputEmailValue"
+          type="email"
+          iconLeft="search"
+          placeholder="Buscar o email..."
+        ></app-input>
+        <span class="text-[11px] text-slate-400 mt-1 block">Valor: {{ inputEmailValue }}</span>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-red-600 mb-1.5">Estado con Error</label>
+        <app-input
+          [(value)]="inputErrorValue"
+          [error]="true"
+          iconRight="warning"
+          placeholder="Campo obligatorio"
+        ></app-input>
+        <span class="text-[11px] text-red-500 mt-1 block">Formato no válido</span>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tamaño Pequeño (sm)</label>
+        <app-input
+          size="sm"
+          placeholder="Input compacto..."
+        ></app-input>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Tamaño Grande (lg)</label>
+        <app-input
+          size="lg"
+          placeholder="Input destacado..."
+        ></app-input>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 mb-1.5">Deshabilitado (disabled)</label>
+        <app-input
+          [disabled]="true"
+          value="Contenido protegido"
+        ></app-input>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Área de Texto y Checkbox (app-textarea, app-checkbox) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Textarea -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+      <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Área de Texto (&lt;app-textarea&gt;)</h3>
+          <p class="text-xs text-slate-500">Multilínea con contador de caracteres y ajuste de filas.</p>
+        </div>
+        <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-textarea</code>
+      </div>
+
+      <div class="space-y-4 pt-1">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Descripción o Comentarios</label>
+          <app-textarea
+            [(value)]="textareaValue"
+            [rows]="3"
+            [maxLength]="150"
+            [showCount]="true"
+            placeholder="Escribe comentarios detallados..."
+          ></app-textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkbox & Spinner -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+      <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Casillas y Spinners (&lt;app-checkbox&gt;, &lt;app-spinner&gt;)</h3>
+          <p class="text-xs text-slate-500">Selección booleana e indicadores de estado de carga.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-1">
+        <div class="flex flex-col gap-2.5">
+          <app-checkbox
+            [(checked)]="checkbox1"
+            label="Recibir notificaciones por correo"
+            description="Te enviaremos resúmenes y alertas del sistema."
+          ></app-checkbox>
+
+          <app-checkbox
+            [(checked)]="checkbox2"
+            label="Acepto los términos y condiciones del host"
+          ></app-checkbox>
+
+          <app-checkbox
+            [indeterminate]="checkboxIndeterminate"
+            label="Selección indeterminada (parcial)"
+          ></app-checkbox>
+
+          <app-checkbox
+            [disabled]="true"
+            [checked]="true"
+            label="Opción fijada (disabled)"
+          ></app-checkbox>
+        </div>
+
+        <div class="border-t border-slate-100 pt-3">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Spinners de Carga</span>
+          <div class="flex items-center gap-6">
+            <app-spinner size="sm" label="Cargando sm..."></app-spinner>
+            <app-spinner size="md" colorClass="text-emerald-600" label="Sincronizando..."></app-spinner>
+            <app-spinner size="lg" colorClass="text-brand-600"></app-spinner>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Botones (app-button) -->
   <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Botones (&lt;app-button&gt;)</h3>
         <p class="text-xs text-slate-500">Múltiples variantes visuales y tamaños para jerarquías de acción.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/atomics/button.component.ts</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-button</code>
     </div>
 
     <!-- Variantes -->
@@ -76,14 +216,14 @@
     </div>
   </div>
 
-  <!-- 2. Badges e Indicadores (app-badge) -->
-  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-5">
+  <!-- 4. Badges e Indicadores (app-badge) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Badges e Indicadores (&lt;app-badge&gt;)</h3>
         <p class="text-xs text-slate-500">Etiquetas de estado semántico, contadores y badges con pulso.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/atomics/badge.component.ts</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-badge</code>
     </div>
 
     <div class="flex flex-wrap items-center gap-3">
@@ -96,13 +236,12 @@
     </div>
   </div>
 
-  <!-- 3. Avatares e Iconos (app-avatar, app-icon) -->
+  <!-- 5. Avatares e Iconos (app-avatar, app-icon) -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Avatares -->
     <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
       <div class="border-b border-slate-100 pb-3">
         <h3 class="font-semibold text-slate-800 text-sm">Avatares (&lt;app-avatar&gt;)</h3>
-        <p class="text-xs text-slate-500">Iniciales automáticas y degradado de fondo corporativo.</p>
+        <p class="text-xs text-slate-500">Iniciales automáticas y degradado corporativo.</p>
       </div>
       <div class="flex items-center gap-6 pt-1">
         <div class="flex items-center gap-2">
@@ -129,7 +268,6 @@
       </div>
     </div>
 
-    <!-- Iconos -->
     <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
       <div class="border-b border-slate-100 pb-3">
         <h3 class="font-semibold text-slate-800 text-sm">Iconos SVG (&lt;app-icon&gt;)</h3>
@@ -153,16 +291,24 @@
           <span class="text-[10px] text-slate-400">cube</span>
         </div>
         <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
-          <app-icon name="code" size="md"></app-icon>
-          <span class="text-[10px] text-slate-400">code</span>
-        </div>
-        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
           <app-icon name="settings" size="md"></app-icon>
           <span class="text-[10px] text-slate-400">settings</span>
         </div>
         <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
-          <app-icon name="chevron-right" size="md"></app-icon>
-          <span class="text-[10px] text-slate-400">chevron-r</span>
+          <app-icon name="info" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">info</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="warning" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">warning</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="trash" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">trash</span>
+        </div>
+        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
+          <app-icon name="search" size="md"></app-icon>
+          <span class="text-[10px] text-slate-400">search</span>
         </div>
         <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
           <app-icon name="chevron-down" size="md"></app-icon>
@@ -171,14 +317,6 @@
         <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
           <app-icon name="check" size="md"></app-icon>
           <span class="text-[10px] text-slate-400">check</span>
-        </div>
-        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
-          <app-icon name="database" size="md"></app-icon>
-          <span class="text-[10px] text-slate-400">database</span>
-        </div>
-        <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
-          <app-icon name="logout" size="md"></app-icon>
-          <span class="text-[10px] text-slate-400">logout</span>
         </div>
         <div class="p-2 rounded-xl bg-slate-50 hover:bg-brand-50 hover:text-brand-600 flex flex-col items-center gap-1 transition-colors">
           <app-icon name="menu" size="md"></app-icon>

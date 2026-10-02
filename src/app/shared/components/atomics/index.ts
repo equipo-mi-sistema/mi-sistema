@@ -2,3 +2,7 @@ export * from './badge.component';
 export * from './button.component';
 export * from './avatar.component';
 export * from './icon.component';
+export * from './input.component';
+export * from './textarea.component';
+export * from './checkbox.component';
+export * from './spinner.component';

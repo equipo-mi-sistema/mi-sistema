@@ -2,9 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BadgeComponent } from '../../../shared/components/atomics';
 import {
+  AccordionItemComponent,
+  AlertComponent,
+  SelectComponent,
+  SelectOption,
   StatCardComponent,
-  UserProfileComponent,
-  NavItemComponent
+  UserProfileComponent
 } from '../../../shared/components/molecules';
 
 @Component({
@@ -15,14 +18,24 @@ import {
     BadgeComponent,
     StatCardComponent,
     UserProfileComponent,
-    NavItemComponent
+    AlertComponent,
+    SelectComponent,
+    AccordionItemComponent
   ],
   templateUrl: './molecules-page.component.html'
 })
 export class MoleculesPageComponent {
-  navItemClicked = 'Ninguno';
+  selectedRole = 'admin';
+  lastAlertDismissed = '';
 
-  onNavItemClick(name: string): void {
-    this.navItemClicked = name;
+  roleOptions: SelectOption[] = [
+    { label: 'Administrador del Sistema', value: 'admin' },
+    { label: 'Editor de Contenido', value: 'editor' },
+    { label: 'Consultor / Lector', value: 'viewer' },
+    { label: 'Auditor Externo (deshabilitado)', value: 'auditor', disabled: true }
+  ];
+
+  onAlertDismiss(type: string): void {
+    this.lastAlertDismissed = `Alerta tipo ${type} descartada.`;
   }
 }

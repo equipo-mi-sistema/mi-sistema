@@ -10,25 +10,164 @@
     </div>
   </div>
 
-  <!-- 1. Menú Reutilizable con Submenús (app-menu) -->
+  <!-- 1. Modales de Notificación y Confirmación (app-modal, app-confirm-modal, app-notification-modal) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-slate-800 text-sm">Sistema de Modales y Diálogos</h3>
+          <app-badge variant="brand" size="sm">Base + Confirm + Notify</app-badge>
+        </div>
+        <p class="text-xs text-slate-500">Backdrop con blur, accesibilidad con tecla ESC, animaciones y estados de carga asíncrona.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">shared/components/organism/modal/</code>
+    </div>
+
+    <!-- Acciones para disparar modales -->
+    <div class="space-y-3 pt-2">
+      <div class="flex flex-wrap items-center gap-3">
+        <app-button variant="primary" (clicked)="isBaseModalOpen = true">
+          <span>Abrir Modal Estándar</span>
+        </app-button>
+
+        <app-button variant="outline" class="text-rose-600 border-rose-300 hover:bg-rose-50" (clicked)="openConfirmModal()">
+          <span>Abrir Modal de Confirmación (Eliminar)</span>
+        </app-button>
+
+        <app-button variant="secondary" (clicked)="openNotification('success')">
+          <span>Notificación Éxito</span>
+        </app-button>
+
+        <app-button variant="secondary" (clicked)="openNotification('error')">
+          <span>Notificación Error</span>
+        </app-button>
+      </div>
+
+      <div class="text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200">
+        Estado de interacción: <strong class="text-brand-600">{{ lastModalResult }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Estándar Base -->
+  <app-modal
+    [(isOpen)]="isBaseModalOpen"
+    title="Configuración de Parámetros del Host"
+    size="md"
+  >
+    <div class="space-y-4">
+      <p class="text-xs text-slate-600">
+        Este modal base incluye cierre automático con la tecla <strong>ESC</strong>, clic fuera en el fondo (backdrop) o botón de cerrar.
+      </p>
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+        <p class="font-semibold text-slate-700">Contenido proyectado</p>
+        <p class="text-slate-500">Puedes inyectar formularios, tablas o cualquier componente dentro del cuerpo del modal.</p>
+      </div>
+    </div>
+
+    <div modal-footer class="flex gap-2">
+      <app-button variant="ghost" size="sm" (clicked)="isBaseModalOpen = false">
+        <span>Cerrar</span>
+      </app-button>
+      <app-button variant="primary" size="sm" (clicked)="isBaseModalOpen = false; lastModalResult = 'Guardado desde modal base.'">
+        <span>Guardar Cambios</span>
+      </app-button>
+    </div>
+  </app-modal>
+
+  <!-- Modal de Confirmación -->
+  <app-confirm-modal
+    [(isOpen)]="isConfirmModalOpen"
+    title="¿Eliminar recurso federado?"
+    message="Esta acción desvinculará permanentemente el microfrontend del catálogo. Esta operación no se puede revertir."
+    confirmText="Sí, eliminar"
+    cancelText="Cancelar"
+    variant="danger"
+    [loading]="isConfirmLoading"
+    (confirmed)="handleConfirmAction()"
+    (cancelled)="handleCancelAction()"
+  ></app-confirm-modal>
+
+  <!-- Modal de Notificación -->
+  <app-notification-modal
+    [(isOpen)]="isNotificationModalOpen"
+    [type]="notificationType"
+    [title]="notificationType === 'success' ? '¡Operación Exitosa!' : 'Atención Requerida'"
+    [message]="notificationType === 'success' ? 'Los componentes se generaron y exportaron correctamente en el sistema.' : 'Ocurrió un inconveniente al conectar con el servidor.'"
+    buttonText="Entendido"
+    (closed)="lastModalResult = 'Notificación cerrada.'"
+  ></app-notification-modal>
+
+  <!-- 2. Acordeón Completo (app-accordion) -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-slate-800 text-sm">Acordeón Coordinado (&lt;app-accordion&gt;)</h3>
+          <app-badge variant="brand" size="sm">Modo Acordeón Dinámico</app-badge>
+        </div>
+        <p class="text-xs text-slate-500">Administra múltiples paneles colapsables con opción de auto-cierre exclusivo.</p>
+      </div>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">shared/components/organism/accordion/</code>
+    </div>
+
+    <div class="flex items-center gap-3 pt-1">
+      <label class="text-xs font-semibold text-slate-700">Modo Acordeón (Solo uno abierto a la vez):</label>
+      <input
+        type="checkbox"
+        [checked]="accordionModeActive"
+        (change)="accordionModeActive = !accordionModeActive"
+        class="rounded text-brand-600 focus:ring-brand-500 h-4 w-4"
+      />
+      <span class="text-xs text-slate-400">({{ accordionModeActive ? 'Activado' : 'Desactivado' }})</span>
+    </div>
+
+    <app-accordion [accordionMode]="accordionModeActive" class="block pt-2">
+      <app-accordion-item
+        title="¿Cómo funciona el Host Shell en Native Federation?"
+        subtitle="Orquestación y enrutamiento"
+        icon="cube"
+        [isOpen]="true"
+      >
+        El Host Shell actúa como la aplicación contenedora raíz. Se encarga del diseño base (Navbar, Sidebar y Menú reutilizable), la autenticación de usuarios con Firebase y la carga dinámica bajo demanda (lazy-loading) de los microfrontends remotos.
+      </app-accordion-item>
+
+      <app-accordion-item
+        title="¿Cómo se comparten los componentes Atómicos?"
+        subtitle="Reutilización en toda la suite"
+        icon="palette"
+      >
+        A través de la carpeta compartida <code>src/app/shared/components</code>, exponiendo índices de barril limpios para que cualquier página o módulo los consuma sin duplicar código CSS ni dependencias.
+      </app-accordion-item>
+
+      <app-accordion-item
+        title="¿Qué ventajas ofrece Angular 20 Standalone?"
+        subtitle="Rendimiento y arquitectura limpia"
+        icon="extension"
+      >
+        Permite prescindir completamente de <code>NgModule</code>, reduciendo el tamaño del bundle, agilizando el tree-shaking y permitiendo el uso nativo de Signals e inputs modernos.
+      </app-accordion-item>
+    </app-accordion>
+  </div>
+
+  <!-- 3. Menú Reutilizable con Submenús (app-menu) -->
   <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
       <div>
         <div class="flex items-center gap-2">
           <h3 class="font-semibold text-slate-800 text-sm">Menú Multinivel Reutilizable (&lt;app-menu&gt;)</h3>
-          <app-badge variant="brand" size="sm">Nuevo Organismo</app-badge>
+          <app-badge variant="brand" size="sm">Organismo</app-badge>
         </div>
         <p class="text-xs text-slate-500">Soporta opciones directas, submenús desplegables con chevrons dinámicos, badges, modo colapsado y acordeón.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/organism/menu/</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">shared/components/organism/menu/</code>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
-      <!-- Demostración visual -->
       <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
         <div class="text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider flex items-center justify-between">
           <span>Vista previa interactiva</span>
-          <span class="text-[11px] font-normal text-slate-400">Haz clic para desplegar submenús</span>
+          <span class="text-[11px] font-normal text-slate-400">Haz clic para desplegar</span>
         </div>
 
         <div class="bg-white p-3 rounded-lg border border-slate-200/80 shadow-xs max-w-sm">
@@ -44,7 +183,6 @@
         </div>
       </div>
 
-      <!-- Guía de uso y código -->
       <div class="space-y-3">
         <h4 class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Características del Componente:</h4>
         <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
@@ -53,26 +191,18 @@
           <li><strong>Responsive &amp; Drawer:</strong> Se integra tanto en el sidebar de escritorio como en el drawer móvil.</li>
           <li><strong>Completamente desacoplado:</strong> Recibe <code>[items]</code> vía Input y emite <code>(itemClicked)</code> vía Output.</li>
         </ul>
-
-        <div class="pt-2">
-          <pre class="bg-slate-900 text-slate-200 p-3.5 rounded-xl text-[11px] font-mono overflow-x-auto"><code>&lt;app-menu
-  [items]="menuItems"
-  [collapsed]="isSidebarCollapsed"
-  (itemClicked)="onMenuItemSelected($event)"&gt;
-&lt;/app-menu&gt;</code></pre>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- 2. Welcome Banner (app-welcome-banner) -->
+  <!-- 4. Welcome Banner (app-welcome-banner) -->
   <div class="space-y-4">
     <div class="flex items-center justify-between">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Banner de Bienvenida (&lt;app-welcome-banner&gt;)</h3>
         <p class="text-xs text-slate-500">Cabecera destacada con gradientes, chips y soporte para botones o contenido proyectado.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/organism/welcome-banner.component.ts</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-welcome-banner</code>
     </div>
 
     <app-welcome-banner
@@ -83,14 +213,14 @@
     </app-welcome-banner>
   </div>
 
-  <!-- 3. Empty State Card (app-empty-state-card) -->
+  <!-- 5. Empty State Card (app-empty-state-card) -->
   <div class="space-y-4">
     <div class="flex items-center justify-between">
       <div>
         <h3 class="font-semibold text-slate-800 text-sm">Tarjeta de Estado Vacío (&lt;app-empty-state-card&gt;)</h3>
         <p class="text-xs text-slate-500">Utilizado para guiar al usuario cuando una sección no posee datos o está en construcción.</p>
       </div>
-      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">src/app/shared/components/organism/empty-state-card.component.ts</code>
+      <code class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">app-empty-state-card</code>
     </div>
 
     <app-empty-state-card

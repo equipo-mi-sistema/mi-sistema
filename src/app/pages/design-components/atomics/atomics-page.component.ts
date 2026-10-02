@@ -1,10 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   AvatarComponent,
   BadgeComponent,
   ButtonComponent,
-  IconComponent
+  CheckboxComponent,
+  IconComponent,
+  InputComponent,
+  SpinnerComponent,
+  TextareaComponent
 } from '../../../shared/components/atomics';
 
 @Component({
@@ -12,16 +17,30 @@ import {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     AvatarComponent,
     BadgeComponent,
     ButtonComponent,
-    IconComponent
+    IconComponent,
+    InputComponent,
+    TextareaComponent,
+    CheckboxComponent,
+    SpinnerComponent
   ],
   templateUrl: './atomics-page.component.html'
 })
 export class AtomicsPageComponent {
   sampleClickCount = 0;
   lastButtonClicked = 'Ninguno';
+
+  // Modelos interactivos de formulario
+  inputTextValue = 'Juan Miguel';
+  inputEmailValue = 'juan.miguel@empresa.com';
+  inputErrorValue = 'Dato inválido';
+  textareaValue = 'Este es un texto multilínea de ejemplo.';
+  checkbox1 = true;
+  checkbox2 = false;
+  checkboxIndeterminate = true;
 
   onButtonClick(label: string): void {
     this.sampleClickCount++;
