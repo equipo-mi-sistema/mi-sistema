@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, NgZone } from '@angular/core';
 import { 
   Auth, 
   GoogleAuthProvider, 
@@ -8,16 +8,30 @@ import {
   getIdTokenResult, 
   User 
 } from '@angular/fire/auth';
+import { 
+  Firestore, 
+  doc, 
+  getDoc, 
+  onSnapshot, 
+  Unsubscribe 
+} from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AppUser, CustomUserClaims } from './auth.models';
+import { AppUser, CustomUserClaims, FirestoreUserDoc, UserRole } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly auth: Auth = inject(Auth);
+  private readonly firestore: Firestore = inject(Firestore);
   private readonly router: Router = inject(Router);
+  private readonly ngZone: NgZone = inject(NgZone);
+
+  static readonly ZERO_TRUST_DENIED_MESSAGE = 
+    'Acceso Denegado: Tu cuenta no tiene un rol asignado. Contacta a tu Líder o Administrador.';
+  static readonly SESSION_REVOKED_MESSAGE = 
+    'Acceso Revocado: Tu cuenta ha sido desactivada o tu rol ha sido modificado. Contacta a tu Administrador.';
 
   // Signals de estado reactivo
   readonly currentUser = signal<AppUser | null>(null);
@@ -27,9 +41,20 @@ export class AuthService {
   // Computed signals
   readonly isAuthenticated = computed(() => !!this.currentUser());
   readonly userClaims = computed<CustomUserClaims>(() => this.currentUser()?.claims ?? {});
-  readonly userRoles = computed<string[]>(() => this.currentUser()?.claims.roles ?? []);
-  readonly userModules = computed<string[]>(() => this.currentUser()?.claims.modules ?? []);
-  readonly userScope = computed<string>(() => this.currentUser()?.claims.scope ?? '');
+  readonly userRole = computed<UserRole>(() => this.currentUser()?.role ?? null);
+  readonly userRoles = computed<string[]>(() => {
+    const directRole = this.currentUser()?.role;
+    const claimsRoles = (this.currentUser()?.claims.roles as string[]) || [];
+    if (directRole && !claimsRoles.includes(directRole)) {
+      return [directRole, ...claimsRoles];
+    }
+    return claimsRoles;
+  });
+  readonly userModules = computed<string[]>(() => (this.currentUser()?.claims.modules as string[]) || []);
+  readonly userScope = computed<string>(() => (this.currentUser()?.claims.scope as string) || '');
+
+  // Listener para cancelar onSnapshot al cerrar sesión
+  private userSnapshotUnsubscribe: Unsubscribe | null = null;
 
   // Observable nativo de Firebase Auth
   readonly authState$: Observable<User | null> = user(this.auth);
@@ -39,38 +64,165 @@ export class AuthService {
   }
 
   /**
-   * Escucha reactivamente los cambios de sesión unificada de Firebase Auth
-   * y extrae los Custom Claims del JWT.
+   * Valida si los datos del documento Firestore cumplen con el protocolo Zero-Trust
+   */
+  private isValidUserDoc(data: FirestoreUserDoc | undefined | null): data is FirestoreUserDoc {
+    return !!(
+      data &&
+      data.status === 'ACTIVE' &&
+      data.role !== null &&
+      data.role !== undefined &&
+      data.team_id !== null &&
+      data.team_id !== undefined
+    );
+  }
+
+  /**
+   * Escucha reactivamente los cambios de sesión de Firebase Auth y aplica Zero-Trust
    */
   private initAuthStateListener(): void {
     this.authState$.subscribe(async (firebaseUser) => {
       this.isLoading.set(true);
+
       if (firebaseUser) {
         try {
-          const tokenResult = await getIdTokenResult(firebaseUser, false);
-          const claims = (tokenResult.claims || {}) as CustomUserClaims;
-
-          this.currentUser.set({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            displayName: firebaseUser.displayName,
-            photoURL: firebaseUser.photoURL,
-            claims: {
-              roles: (claims['roles'] as string[]) || [],
-              modules: (claims['modules'] as string[]) || [],
-              scope: (claims['scope'] as string) || '',
-              ...claims
-            }
-          });
+          await this.verifyAndSyncUser(firebaseUser);
         } catch (error) {
-          console.error('Error al obtener Custom Claims del usuario:', error);
-          this.currentUser.set(null);
+          console.error('Error al sincronizar y verificar usuario Zero-Trust:', error);
+          await this.handleZeroTrustRejection(AuthService.ZERO_TRUST_DENIED_MESSAGE);
         }
       } else {
+        this.detachUserSnapshot();
         this.currentUser.set(null);
       }
+
       this.isLoading.set(false);
     });
+  }
+
+  /**
+   * Consulta el documento /users/{uid} en Firestore y verifica condiciones Zero-Trust
+   */
+  async verifyAndSyncUser(firebaseUser: User): Promise<AppUser | null> {
+    const userDocRef = doc(this.firestore, 'users', firebaseUser.uid);
+    const docSnap = await getDoc(userDocRef);
+
+    if (!docSnap.exists()) {
+      await this.handleZeroTrustRejection(AuthService.ZERO_TRUST_DENIED_MESSAGE);
+      return null;
+    }
+
+    const userData = docSnap.data() as FirestoreUserDoc;
+
+    if (!this.isValidUserDoc(userData)) {
+      await this.handleZeroTrustRejection(AuthService.ZERO_TRUST_DENIED_MESSAGE);
+      return null;
+    }
+
+    // Obtener claims del token
+    const tokenResult = await getIdTokenResult(firebaseUser, false);
+    const claims = (tokenResult.claims || {}) as CustomUserClaims;
+
+    const appUser: AppUser = {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      displayName: firebaseUser.displayName,
+      photoURL: firebaseUser.photoURL,
+      role: userData.role,
+      teamId: userData.team_id,
+      status: userData.status,
+      claims: {
+        roles: (claims['roles'] as string[]) || (userData.role ? [userData.role] : []),
+        modules: (claims['modules'] as string[]) || [],
+        scope: (claims['scope'] as string) || '',
+        ...claims
+      }
+    };
+
+    this.currentUser.set(appUser);
+    this.authError.set(null);
+
+    // Adjuntar listener onSnapshot para cambios en tiempo real
+    this.attachUserSnapshot(firebaseUser.uid);
+
+    return appUser;
+  }
+
+  /**
+   * Adjunta un listener onSnapshot sobre /users/{uid} para gobernanza en tiempo real
+   */
+  private attachUserSnapshot(uid: string): void {
+    this.detachUserSnapshot();
+
+    const userDocRef = doc(this.firestore, 'users', uid);
+    this.userSnapshotUnsubscribe = onSnapshot(
+      userDocRef,
+      (snapshot) => {
+        this.ngZone.run(async () => {
+          if (!snapshot.exists()) {
+            await this.handleZeroTrustRejection(AuthService.SESSION_REVOKED_MESSAGE);
+            return;
+          }
+
+          const data = snapshot.data() as FirestoreUserDoc;
+          if (data.status !== 'ACTIVE' || !data.role || !data.team_id) {
+            await this.handleZeroTrustRejection(AuthService.SESSION_REVOKED_MESSAGE);
+            return;
+          }
+
+          // Si el documento sigue siendo válido, actualizar el signal de usuario reactivo
+          this.currentUser.update((current) => {
+            if (!current) return null;
+            return {
+              ...current,
+              role: data.role,
+              teamId: data.team_id,
+              status: data.status,
+              displayName: data.displayName || current.displayName,
+              claims: {
+                ...current.claims,
+                roles: current.claims.roles || (data.role ? [data.role] : [])
+              }
+            };
+          });
+        });
+      },
+      (error) => {
+        console.error('Error en listener onSnapshot de usuario:', error);
+      }
+    );
+  }
+
+  /**
+   * Remueve el listener de snapshot
+   */
+  private detachUserSnapshot(): void {
+    if (this.userSnapshotUnsubscribe) {
+      this.userSnapshotUnsubscribe();
+      this.userSnapshotUnsubscribe = null;
+    }
+  }
+
+  /**
+   * Protocolo de expulsión Zero-Trust:
+   * 1. Detener listeners
+   * 2. Purgar estado en memoria
+   * 3. Publicar error en authError
+   * 4. Cerrar sesión en Firebase
+   * 5. Redirigir hacia /login
+   */
+  async handleZeroTrustRejection(errorMessage: string): Promise<void> {
+    this.detachUserSnapshot();
+    this.currentUser.set(null);
+    this.authError.set(errorMessage);
+
+    try {
+      await signOut(this.auth);
+    } catch (e) {
+      console.warn('Error al ejecutar signOut en rechazo Zero-Trust:', e);
+    }
+
+    await this.router.navigate(['/login']);
   }
 
   /**
@@ -85,34 +237,23 @@ export class AuthService {
       provider.setCustomParameters({ prompt: 'select_account' });
 
       const credential = await signInWithPopup(this.auth, provider);
-      const tokenResult = await getIdTokenResult(credential.user, true);
-      const claims = (tokenResult.claims || {}) as CustomUserClaims;
+      const appUser = await this.verifyAndSyncUser(credential.user);
 
-      const appUser: AppUser = {
-        uid: credential.user.uid,
-        email: credential.user.email,
-        displayName: credential.user.displayName,
-        photoURL: credential.user.photoURL,
-        claims: {
-          roles: (claims['roles'] as string[]) || [],
-          modules: (claims['modules'] as string[]) || [],
-          scope: (claims['scope'] as string) || '',
-          ...claims
-        }
-      };
+      if (!appUser) {
+        throw new Error(AuthService.ZERO_TRUST_DENIED_MESSAGE);
+      }
 
-      this.currentUser.set(appUser);
       return appUser;
     } catch (error: any) {
-      console.error('Fallo en Google SSO:', error);
-      let message = 'Ocurrió un error al iniciar sesión con Google.';
+      console.error('Fallo en Google SSO o verificación Zero-Trust:', error);
+      let message = this.authError() || 'Ocurrió un error al iniciar sesión con Google.';
       if (error?.code === 'auth/popup-closed-by-user') {
         message = 'La ventana de inicio de sesión se cerró antes de completar el proceso.';
       } else if (error?.code === 'auth/cancelled-popup-request') {
         message = 'Solicitud de autenticación cancelada.';
       } else if (error?.code === 'auth/network-request-failed') {
         message = 'Error de red. Verifica tu conexión a internet.';
-      } else if (error?.message) {
+      } else if (error?.message && !this.authError()) {
         message = error.message;
       }
       this.authError.set(message);
@@ -128,8 +269,10 @@ export class AuthService {
   async logout(): Promise<void> {
     this.isLoading.set(true);
     try {
+      this.detachUserSnapshot();
       await signOut(this.auth);
       this.currentUser.set(null);
+      this.authError.set(null);
       await this.router.navigate(['/login']);
     } finally {
       this.isLoading.set(false);

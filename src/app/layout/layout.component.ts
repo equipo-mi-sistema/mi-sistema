@@ -1,10 +1,12 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { BadgeComponent, ButtonComponent, IconComponent } from '../shared/components/atomics';
+import { BadgeComponent, ButtonComponent, IconComponent, ToggleComponent } from '../shared/components/atomics';
 import { UserProfileComponent } from '../shared/components/molecules';
 import { MenuComponent, MenuItem, ToastContainerComponent } from '../shared/components/organism';
 import { AuthService } from '../core/auth/auth.service';
+import { ThemeService } from '../core/services/theme.service';
+import { RemoteManifestService } from '../core/services/remote-manifest.service';
 
 @Component({
   selector: 'app-layout',
@@ -15,6 +17,7 @@ import { AuthService } from '../core/auth/auth.service';
     BadgeComponent,
     ButtonComponent,
     IconComponent,
+    ToggleComponent,
     UserProfileComponent,
     MenuComponent,
     ToastContainerComponent
@@ -24,6 +27,8 @@ import { AuthService } from '../core/auth/auth.service';
 })
 export class LayoutComponent {
   readonly authService = inject(AuthService);
+  readonly themeService = inject(ThemeService);
+  readonly manifestService = inject(RemoteManifestService);
 
   // Sidebar state using Angular signals
   isSidebarOpen = signal<boolean>(true);
@@ -32,6 +37,7 @@ export class LayoutComponent {
   // Datos reactivos del usuario autenticado
   userName = computed(() => this.authService.currentUser()?.displayName || 'Usuario');
   userEmail = computed(() => this.authService.currentUser()?.email || 'usuario@sistema.local');
+  userRole = computed(() => this.authService.currentUser()?.role || null);
   userInitials = computed(() => {
     const name = this.userName();
     const parts = name.split(' ').filter(Boolean);
@@ -41,21 +47,36 @@ export class LayoutComponent {
     return (name.slice(0, 2) || 'US').toUpperCase();
   });
 
-  // Reusable Navigation items with sub-menus support
-  menuItems: MenuItem[] = [
-    { label: 'Panel Principal', icon: 'dashboard', route: '/', exact: true },
-    {
-      label: 'Componentes de diseño',
-      icon: 'palette',
-      children: [
-        { label: 'Atómicos', route: '/componentes-diseno/atomicos', icon: 'cube' },
-        { label: 'Moléculas', route: '/componentes-diseno/moleculas', icon: 'extension' },
-        { label: 'Organismos', route: '/componentes-diseno/organismos', icon: 'palette' }
-      ]
-    },
-    { label: 'Administración', icon: 'extension', route: '/administracion', badge: 'Remoto' },
-    { label: 'Configuración', icon: 'settings', route: '/configuracion' }
-  ];
+  // Menú dinámico filtrado reactivamente por Kill Switch y roles (REQ-HOST-009)
+  readonly menuItems = computed<MenuItem[]>(() => {
+    const role = this.userRole();
+
+    // Obtener microfrontends activos en Firestore permitidos para el rol
+    const dynamicRemoteItems: MenuItem[] = this.manifestService
+      .activeConfigs()
+      .filter((cfg) => this.manifestService.isUserAllowed(cfg.routePath, role))
+      .map((cfg) => ({
+        label: cfg.name,
+        icon: cfg.icon || 'extension',
+        route: `/${cfg.routePath}`,
+        badge: cfg.badge || 'Remoto'
+      }));
+
+    return [
+      { label: 'Panel Principal', icon: 'dashboard', route: '/', exact: true },
+      {
+        label: 'Componentes de diseño',
+        icon: 'palette',
+        children: [
+          { label: 'Atómicos', route: '/componentes-diseno/atomicos', icon: 'cube' },
+          { label: 'Moléculas', route: '/componentes-diseno/moleculas', icon: 'extension' },
+          { label: 'Organismos', route: '/componentes-diseno/organismos', icon: 'palette' }
+        ]
+      },
+      ...dynamicRemoteItems,
+      { label: 'Configuración', icon: 'settings', route: '/configuracion' }
+    ];
+  });
 
   toggleSidebar(): void {
     this.isSidebarOpen.update((open) => !open);
@@ -70,7 +91,6 @@ export class LayoutComponent {
   }
 
   onDesktopMenuItemClick(item: MenuItem): void {
-    // Si la barra está colapsada y se pulsa una opción con submenús, expandir la barra para ver las opciones
     if (!this.isSidebarOpen() && item.children && item.children.length > 0) {
       this.isSidebarOpen.set(true);
     }
@@ -80,6 +100,10 @@ export class LayoutComponent {
     if (item.route) {
       this.closeMobileMenu();
     }
+  }
+
+  onThemeToggle(isDark: boolean): void {
+    this.themeService.setTheme(isDark ? 'dark' : 'light');
   }
 
   async logout(): Promise<void> {

@@ -4,13 +4,14 @@ import { LayoutComponent } from './layout/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { authGuard } from './core/auth/guards/auth.guard';
 import { publicOnlyGuard } from './core/auth/guards/public-only.guard';
+import { dynamicRemoteGuard } from './core/guards/dynamic-remote.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
     canActivate: [publicOnlyGuard],
     loadComponent: () =>
-      import('./shared/components/organism/login-page.component').then(
+      import('./pages/auth/login-page.component').then(
         (m) => m.LoginPageComponent
       ),
     title: 'Sistema Host | Iniciar Sesión'
@@ -24,6 +25,14 @@ export const routes: Routes = [
         path: '',
         component: DashboardComponent,
         title: 'Sistema Host | Panel Principal'
+      },
+      {
+        path: 'modulo-inactivo',
+        loadComponent: () =>
+          import('./pages/fallback/remote-fallback.component').then(
+            (m) => m.RemoteFallbackComponent
+          ),
+        title: 'Sistema Host | Módulo Inactivo'
       },
       {
         path: 'componentes-diseno',
@@ -65,6 +74,7 @@ export const routes: Routes = [
       },
       {
         path: 'administracion',
+        canActivate: [dynamicRemoteGuard],
         loadChildren: () =>
           loadRemoteModule('administracion', './routes')
             .then((m) => m.routes)
@@ -75,6 +85,71 @@ export const routes: Routes = [
               );
             }),
         title: 'Sistema Host | Módulo Administración'
+      },
+      {
+        path: 'mapeo',
+        canActivate: [dynamicRemoteGuard],
+        loadChildren: () =>
+          loadRemoteModule('mapeo', './routes')
+            .then((m) => m.routes)
+            .catch(() =>
+              import('./pages/fallback/remote-fallback.component').then(
+                (m) => m.FALLBACK_ROUTES
+              )
+            ),
+        title: 'Sistema Host | Módulo Mapeo'
+      },
+      {
+        path: 'gestion',
+        canActivate: [dynamicRemoteGuard],
+        loadChildren: () =>
+          loadRemoteModule('gestion', './routes')
+            .then((m) => m.routes)
+            .catch(() =>
+              import('./pages/fallback/remote-fallback.component').then(
+                (m) => m.FALLBACK_ROUTES
+              )
+            ),
+        title: 'Sistema Host | Módulo Gestión'
+      },
+      {
+        path: 'asistencia',
+        canActivate: [dynamicRemoteGuard],
+        loadChildren: () =>
+          loadRemoteModule('asistencia', './routes')
+            .then((m) => m.routes)
+            .catch(() =>
+              import('./pages/fallback/remote-fallback.component').then(
+                (m) => m.FALLBACK_ROUTES
+              )
+            ),
+        title: 'Sistema Host | Módulo Asistencia'
+      },
+      {
+        path: 'transporte',
+        canActivate: [dynamicRemoteGuard],
+        loadChildren: () =>
+          loadRemoteModule('transporte', './routes')
+            .then((m) => m.routes)
+            .catch(() =>
+              import('./pages/fallback/remote-fallback.component').then(
+                (m) => m.FALLBACK_ROUTES
+              )
+            ),
+        title: 'Sistema Host | Módulo Transporte'
+      },
+      {
+        path: 'conteo',
+        canActivate: [dynamicRemoteGuard],
+        loadChildren: () =>
+          loadRemoteModule('conteo', './routes')
+            .then((m) => m.routes)
+            .catch(() =>
+              import('./pages/fallback/remote-fallback.component').then(
+                (m) => m.FALLBACK_ROUTES
+              )
+            ),
+        title: 'Sistema Host | Módulo Conteo'
       }
     ]
   },
