@@ -24,7 +24,8 @@ export const dynamicRemoteGuard: CanActivateFn = (
   }
 
   // Verificar si el rol del usuario está permitido
-  const userRole = authService.currentUser()?.role || null;
+  const user = authService.currentUser();
+  const userRole = user?.role_id || user?.role || null;
   const isAllowed = manifestService.isUserAllowed(targetPath, userRole);
 
   if (!isAllowed) {

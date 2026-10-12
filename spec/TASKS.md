@@ -1,4 +1,4 @@
-# Plan de Tareas de Implementación (TASK) - SISTEMA Host
+# Plan de Tareas de Implementación (TASKS) - SISTEMA Host
 
 > **Documento de Tareas de Implementación (SDD - Spec-Driven Development)**  
 > **Sistema**: Shell Host Polyrepo (Angular 20 + Native Federation)  
@@ -14,9 +14,9 @@
 | :--- | :--- | :---: | :--- | :---: |
 | **REQ-HOST-001** | Shell Angular 20 Standalone + Native Federation | Fase 1 | TASK-1.1, TASK-1.2, TASK-1.3 | [x] |
 | **REQ-HOST-002** | Login con Google OAuth vía `GoogleButtonComponent` | Fase 2, 3 | TASK-2.1, TASK-3.1 | [x] |
-| **REQ-HOST-003** | Rechazo Zero-Trust (`role`/`team_id` ausentes) + Alerta `danger` | Fase 2, 3 | TASK-2.2, TASK-3.2, TASK-3.3 | [x] |
+| **REQ-HOST-003** | Rechazo Zero-Trust (`role_id`/`team_id` ausentes) + Alerta `danger` | Fase 2, 3 | TASK-2.2, TASK-3.2, TASK-3.3 | [x] |
 | **REQ-HOST-004** | Listener `onSnapshot` activo sobre `/users/{uid}` | Fase 3 | TASK-3.4 | [x] |
-| **REQ-HOST-005** | Revocación y expulsión multi-pestaña ante `INACTIVE` o rol nulo | Fase 3 | TASK-3.4, TASK-3.5 | [x] |
+| **REQ-HOST-005** | Revocación y expulsión multi-pestaña ante `INACTIVE` o `role_id` nulo | Fase 3 | TASK-3.4, TASK-3.5 | [x] |
 | **REQ-HOST-006** | Consulta y carga dinámica del manifiesto `/config/microfrontends` | Fase 4 | TASK-4.1, TASK-4.3 | [x] |
 | **REQ-HOST-007** | Validación de acceso por `DynamicRemoteGuard` (`active` y `rolesAllowed`) | Fase 4 | TASK-4.2 | [x] |
 | **REQ-HOST-008** | Fallback a `EmptyStateCardComponent` si el módulo está inactivo | Fase 2, 4 | TASK-2.2, TASK-4.2 | [x] |
@@ -100,13 +100,13 @@
   - **Acción**: Tras la autenticación con Google, consultar el documento `doc(firestore, 'users', uid)`.
   - **Validación**:
     - El documento debe existir.
-    - `role` debe ser no nulo y válido.
+    - `role_id` debe ser no nulo y válido.
     - `team_id` debe ser no nulo.
     - `status` debe ser `'ACTIVE'`.
   - **Criterio de Aceptación (DoD)**: Si la validación pasa, se establece `currentUser` con su rol y equipo asignados.
 - [x] **TASK-3.3**: Protocolo de Expulsión Zero-Trust e Invocación de Alerta.
   - **Archivos**: `src/app/core/auth/auth.service.ts`, `src/app/pages/auth/login-page.component.ts`, `src/app/shared/components/organism/login-card.component.ts`
-  - **Acción**: Si falla la verificación de `role`, `team_id` o `status`:
+  - **Acción**: Si falla la verificación de `role_id`, `team_id` o `status`:
     1. Ejecutar `signOut(auth)`.
     2. Purgar estado de sesión en memoria (`currentUser.set(null)`).
     3. Redirigir hacia `/login` con parámetro o estado de alerta.
@@ -115,11 +115,11 @@
 - [x] **TASK-3.4**: Listener reactivo `onSnapshot` sobre `/users/{uid}`.
   - **Archivo**: `src/app/core/auth/auth.service.ts`
   - **Acción**: Mantener una suscripción `onSnapshot` activa mientras el usuario tenga sesión abierta.
-  - **Criterio de Aceptación (DoD)**: Si en Firestore cambia `status` a `'INACTIVE'` o se borra el `role`, el listener invoca inmediatamente `signOut()` y expulsa al usuario hacia el login en todas las ventanas abiertas.
+  - **Criterio de Aceptación (DoD)**: Si en Firestore cambia `status` a `'INACTIVE'` o se borra el `role_id`, el listener invoca inmediatamente `signOut()` y expulsa al usuario hacia el login en todas las ventanas abiertas.
 - [x] **TASK-3.5**: Implementación de `AuthGuard` e `AuthInterceptor`.
   - **Archivos**: `src/app/core/auth/guards/auth.guard.ts`, `src/app/core/auth/auth.interceptor.ts`
   - **Acción**:
-    - `authGuard`: Bloquear rutas si `isAuthenticated()` es falso, rol ausente o `status !== 'ACTIVE'`.
+    - `authGuard`: Bloquear rutas si `isAuthenticated()` es falso, rol (`role_id`) ausente o `status !== 'ACTIVE'`.
     - `authInterceptor`: Agregar cabecera `Authorization: Bearer <ID_TOKEN>` a peticiones HTTP hacia servicios autorizados.
   - **Criterio de Aceptación (DoD)**: Las rutas hijas de `/` quedan protegidas y las peticiones HTTP llevan el token inyectado.
 

@@ -16,7 +16,8 @@ export const authGuard: CanActivateFn = (
     take(1),
     map(() => {
       const user = authService.currentUser();
-      if (user && user.role && user.teamId && user.status === 'ACTIVE') {
+      const role = user?.role_id || user?.role;
+      if (user && role && (user.teamId || user.team_id) && user.status === 'ACTIVE') {
         return true;
       }
       return router.createUrlTree(['/login'], {

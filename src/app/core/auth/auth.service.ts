@@ -41,9 +41,11 @@ export class AuthService {
   // Computed signals
   readonly isAuthenticated = computed(() => !!this.currentUser());
   readonly userClaims = computed<CustomUserClaims>(() => this.currentUser()?.claims ?? {});
-  readonly userRole = computed<UserRole>(() => this.currentUser()?.role ?? null);
+  readonly userRole = computed<UserRole>(() => this.currentUser()?.role_id ?? this.currentUser()?.role ?? null);
+  readonly userRoleId = computed<string | null>(() => this.currentUser()?.role_id ?? (this.currentUser()?.role as string) ?? null);
+  readonly userTeamId = computed<string | null>(() => this.currentUser()?.team_id ?? this.currentUser()?.teamId ?? null);
   readonly userRoles = computed<string[]>(() => {
-    const directRole = this.currentUser()?.role;
+    const directRole = this.currentUser()?.role_id || this.currentUser()?.role;
     const claimsRoles = (this.currentUser()?.claims.roles as string[]) || [];
     if (directRole && !claimsRoles.includes(directRole)) {
       return [directRole, ...claimsRoles];
@@ -67,11 +69,12 @@ export class AuthService {
    * Valida si los datos del documento Firestore cumplen con el protocolo Zero-Trust
    */
   private isValidUserDoc(data: FirestoreUserDoc | undefined | null): data is FirestoreUserDoc {
+    const roleId = data?.role_id || data?.role;
     return !!(
       data &&
       data.status === 'ACTIVE' &&
-      data.role !== null &&
-      data.role !== undefined &&
+      roleId !== null &&
+      roleId !== undefined &&
       data.team_id !== null &&
       data.team_id !== undefined
     );
@@ -122,17 +125,25 @@ export class AuthService {
     // Obtener claims del token
     const tokenResult = await getIdTokenResult(firebaseUser, false);
     const claims = (tokenResult.claims || {}) as CustomUserClaims;
+    const effectiveRole = (userData.role_id || userData.role || claims.role_id || (claims.roles && claims.roles[0]) || null) as UserRole;
+    const effectiveTeam = userData.team_id || (claims.team_id as string) || null;
 
     const appUser: AppUser = {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
       displayName: firebaseUser.displayName,
       photoURL: firebaseUser.photoURL,
-      role: userData.role,
-      teamId: userData.team_id,
+      role: effectiveRole,
+      role_id: (effectiveRole as string) || null,
+      roleId: (effectiveRole as string) || null,
+      teamId: effectiveTeam,
+      team_id: effectiveTeam,
+      cargo: userData.cargo,
       status: userData.status,
       claims: {
-        roles: (claims['roles'] as string[]) || (userData.role ? [userData.role] : []),
+        role_id: (effectiveRole as string) || undefined,
+        team_id: effectiveTeam || undefined,
+        roles: (claims['roles'] as string[]) || (effectiveRole ? [effectiveRole as string] : []),
         modules: (claims['modules'] as string[]) || [],
         scope: (claims['scope'] as string) || '',
         ...claims
@@ -165,7 +176,8 @@ export class AuthService {
           }
 
           const data = snapshot.data() as FirestoreUserDoc;
-          if (data.status !== 'ACTIVE' || !data.role || !data.team_id) {
+          const effectiveRole = (data.role_id || data.role) as UserRole;
+          if (data.status !== 'ACTIVE' || !effectiveRole || !data.team_id) {
             await this.handleZeroTrustRejection(AuthService.SESSION_REVOKED_MESSAGE);
             return;
           }
@@ -175,13 +187,19 @@ export class AuthService {
             if (!current) return null;
             return {
               ...current,
-              role: data.role,
+              role: effectiveRole,
+              role_id: (effectiveRole as string) || null,
+              roleId: (effectiveRole as string) || null,
               teamId: data.team_id,
+              team_id: data.team_id,
+              cargo: data.cargo || current.cargo,
               status: data.status,
               displayName: data.displayName || current.displayName,
               claims: {
                 ...current.claims,
-                roles: current.claims.roles || (data.role ? [data.role] : [])
+                role_id: (effectiveRole as string) || undefined,
+                team_id: data.team_id || undefined,
+                roles: current.claims.roles || (effectiveRole ? [effectiveRole as string] : [])
               }
             };
           });

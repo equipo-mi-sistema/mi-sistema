@@ -3,7 +3,7 @@
 > **Documento de Diseño Técnico (SDD - Spec-Driven Development)**  
 > **Sistema**: Shell Host Polyrepo (Angular 20 + Native Federation)  
 > **Documentos de Referencia**: [CONSTITUTION.md](file:///d:/App's%20Juancho/MI%20SISTEMA/mi-sistema/CONSTITUTION.md) | [SPEC.md](file:///d:/App's%20Juancho/MI%20SISTEMA/mi-sistema/SPEC.md)  
-> **Seguimiento de Tareas**: [TASK.md](file:///d:/App's%20Juancho/MI%20SISTEMA/mi-sistema/TASK.md)
+> **Seguimiento de Tareas**: [TASKS.md](file:///d:/App's%20Juancho/MI%20SISTEMA/mi-sistema/TASKS.md)
 
 ---
 
@@ -33,22 +33,23 @@ El subsistema de autenticación se consolida bajo `src/app/core/auth/` y se comp
 
 - **`AuthService`**:
   - Encapsula `FirebaseApp`, `Auth`, `GoogleAuthProvider` y consultas a `Firestore`.
-  - Expone señales reactivas (`signal`, `computed`) para el estado de autenticación: `currentUser`, `isAuthenticated`, `userClaims`, `userRoles`, `isLoading`.
+  - Expone señales reactivas (`signal`, `computed`) para el estado de autenticación: `currentUser`, `isAuthenticated`, `userClaims`, `userRoleId`, `isLoading`.
   - Gestiona el listener `onSnapshot` hacia `/users/{uid}`.
 - **`AuthGuard`**:
-  - Función guard standalone (`canActivateFn`) que verifica sesión activa, perfil Firestore existente, estado `ACTIVE` y rol válido.
+  - Función guard standalone (`canActivateFn`) que verifica sesión activa, perfil Firestore existente, estado `ACTIVE` y rol válido (`role_id`).
 - **`AuthInterceptor`**:
   - Interceptor HTTP funcional (`HttpInterceptorFn`) que recupera el Firebase ID Token (`getIdToken()`) y lo inyecta como cabecera `Authorization: Bearer <ID_TOKEN>` en peticiones salientes autorizadas.
 
 ```typescript
-// Contrato de Usuario y Autorización Zero-Trust
+// Contrato de Usuario y Autorización Zero-Trust (Alineado con sistema-administracion)
 export interface FirestoreUserDoc {
   uid: string;
   email: string;
   displayName: string;
   photoURL?: string;
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'LEADER' | 'OPERATOR' | null;
-  team_id: string | null;
+  role_id: string | null;  // Identificador de rol vinculado a /roles/{role_id}
+  team_id: string | null;  // Identificador de equipo vinculado a /teams/{team_id}
+  cargo?: string;          // Cargo organizacional funcional (metadato)
   status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
   updatedAt: string;
 }
@@ -58,7 +59,7 @@ export interface AppUser {
   email: string | null;
   displayName: string | null;
   photoURL: string | null;
-  role: string;
+  roleId: string;
   teamId: string;
   claims: Record<string, unknown>;
 }
@@ -97,9 +98,9 @@ Las microapps no están estáticas en el archivo de rutas; se cargan dinámicame
     name: string;            // 'Módulo de Mapeo'
     routePath: string;       // 'mapeo'
     remoteEntry: string;     // 'http://localhost:4201/remoteEntry.json'
-    exposedModule: string;   // './Component'
+    exposedModule: string;   // './routes' (o './Component' según configuración)
     active: boolean;         // Kill Switch: true | false
-    rolesAllowed: string[];  // ['SUPER_ADMIN', 'ADMIN', 'OPERATOR']
+    rolesAllowed: string[];  // ['SUPER_ADMIN', 'TEAM_OWNER', 'MEMBER']
     icon?: string;
     order: number;
   }
@@ -109,7 +110,7 @@ Las microapps no están estáticas en el archivo de rutas; se cargan dinámicame
   - Almacena el manifiesto en un `signal<MicrofrontendConfig[]>`.
 - **`DynamicRemoteGuard` (`canActivateFn`)**:
   - Verifica si `active === true`. Si es `false`, interrumpe la navegación y enruta hacia el componente de fallback `EmptyStateCardComponent` (Modo Mantenimiento).
-  - Verifica si el `role` del usuario está incluido en `rolesAllowed`.
+  - Verifica si el `role_id` del usuario está incluido en `rolesAllowed`.
 
 ### 2.4 Gestión de Estado y Tema Visual (`ThemeService`)
 - Persistencia local en `localStorage` bajo la clave `sistema_theme` (`'light' | 'dark'`).
@@ -146,8 +147,8 @@ Estructurado en `src/app/shared/components/`:
       [Query Firestore /users/{uid}]  [Mostrar Alert danger]
                     │
         ┌───────────┴───────────┐
- (Existe doc &           (No existe doc, rol==null
-  role != null &          o team_id == null)
+ (Existe doc &           (No existe doc, role_id==null
+  role_id != null &       o team_id == null)
   team_id != null &             │
   status == 'ACTIVE')           ▼
         │             [EJECUTAR ZERO-TRUST REJECTION]
@@ -168,7 +169,7 @@ Estructurado en `src/app/shared/components/`:
 1. Al autenticarse con éxito, `AuthService` establece un observador `onSnapshot(docRef)` sobre `/users/{uid}`.
 2. Si el Administrador altera remotamente el documento:
    - `status !== 'ACTIVE'` (ej. `INACTIVE`, `SUSPENDED`) o
-   - `role === null` (revocado):
+   - `role_id === null` (revocado):
 3. `AuthService` ejecuta inmediatamente:
    - `signOut()` en Firebase.
    - Limpieza de señales y almacenamiento.
@@ -201,9 +202,9 @@ Estructurado en `src/app/shared/components/`:
 | **REQ-HOST-002** (Google OAuth Popup) | `GoogleButtonComponent`, `AuthService` | `signInWithPopup(GoogleAuthProvider)` |
 | **REQ-HOST-003** (Zero-Trust Exception) | `AuthService`, `AuthGuard`, `AlertComponent` | Verificación en `/users/{uid}`, `signOut()`, alerta `danger` |
 | **REQ-HOST-004** (Listener onSnapshot) | `AuthService.attachUserSnapshot()` | Escucha en tiempo real sobre Firestore |
-| **REQ-HOST-005** (Revocación Inmediata) | `AuthService` onSnapshot handler | Cierre de sesión y redirección automática si `INACTIVE` o `role == null` |
+| **REQ-HOST-005** (Revocación Inmediata) | `AuthService` onSnapshot handler | Cierre de sesión y redirección automática si `INACTIVE` o `role_id == null` |
 | **REQ-HOST-006** (Remote Manifest) | `RemoteManifestService` | Lectura de `/config/microfrontends` |
-| **REQ-HOST-007** (Dynamic Routing Guard) | `DynamicRemoteGuard` | Verificación de `active: true` y `rolesAllowed` |
+| **REQ-HOST-007** (Dynamic Routing Guard) | `DynamicRemoteGuard` | Verificación de `active: true` y `rolesAllowed` para `role_id` |
 | **REQ-HOST-008** (Kill Switch Fallback) | `DynamicRemoteGuard`, `EmptyStateCardComponent` | Renderizado de estado fuera de servicio |
 | **REQ-HOST-009** (Sidebar Dinámico) | `SidebarNavigationComponent` | Filtrado reactivo de ítems activos |
 | **REQ-HOST-010** (Tema Toggle) | `HeaderUserBarComponent`, `ThemeService` | Conmutador de señal y clave `sistema_theme` |

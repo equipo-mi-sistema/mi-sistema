@@ -10,14 +10,14 @@
 
 1. **Autenticación Exclusiva e Inflexible**:
    - Únicamente se permite Google OAuth como proveedor de identidad.
-   - El acceso es **Zero-Trust**: Si un usuario autenticado no posee un documento en `/users/{uid}` con un `role` y `team_id` válidos asignados por un Administrador, el Host DEBE cerrar la sesión de inmediato, destruir los tokens y redirigirlo a la pantalla de login con un mensaje de alerta.
+   - El acceso es **Zero-Trust**: Si un usuario autenticado no posee un documento en `/users/{uid}` con un `role_id` y `team_id` válidos asignados por un Administrador, el Host DEBE cerrar la sesión de inmediato, destruir los tokens y redirigirlo a la pantalla de login con un mensaje de alerta.
 
 2. **Carga Dinámica y "Kill Switch" de Microfrontends**:
    - Las URLs y estados de activación de los microfrontends remotos no están codificados de forma rígida; se obtienen en tiempo real desde Firestore (`/config/microfrontends`).
    - El Host DEBE ocultar del menú y bloquear el acceso mediante Guards a cualquier microfrontend cuyo estado sea `active: false`.
 
 3. **Gobernanza de Sesión en Tiempo Real**:
-   - El Host debe mantener una conexión activa `onSnapshot` sobre `/users/{uid}`. Si el estado cambia a `INACTIVE` o el `role` se revoca, la sesión se expulsa de inmediato en todas las pestañas abiertas.
+   - El Host debe mantener una conexión activa `onSnapshot` sobre `/users/{uid}`. Si el estado cambia a `INACTIVE` o el `role_id` se revoca (`null`), la sesión se expulsa de inmediato en todas las pestañas abiertas.
 
 4. **Persistencia Visual sin Costo de Red**:
    - La preferencia de tema (`light` | `dark`) se gestiona localmente en `localStorage` (`sistema_theme`) alternando la clase `.dark` en el elemento raíz `<html>`.
@@ -33,7 +33,7 @@ host/
 ├── src/ 
 │   ├── app/ 
 │   │   ├── core/ 
-│   │   │   ├── auth/          # AuthService, AuthInterceptor, Custom Claims 
+│   │   │   ├── auth/          # AuthService (@sistema/auth), AuthInterceptor, Custom Claims 
 │   │   │   ├── guards/        # AuthGuard, RoleGuard, DynamicRemoteGuard 
 │   │   │   ├── models/        # User, Team, MicrofrontendConfig Interfaces 
 │   │   │   └── services/      # ThemeService, RemoteManifestService 
@@ -41,15 +41,14 @@ host/
 │   │   │   └── components/    # Catálogo Atómico (atoms, molecules, organism) 
 │   │   └── pages/ 
 │   │       ├── auth/          # LoginPageComponent 
-│   │       └── dashboard/     # ShellDashboardPageComponent 
+│   │       ├── dashboard/     # ShellDashboardPageComponent 
+│   │       └── [feature-pages]/ # Vistas adaptativas según la necesidad del Host 
 │   ├── environments/ 
-│   ├── styles.css 
+│   ├── styles.css             # Estándar transversal CSS puro de Tailwind 
 │   ├── tailwind.config.js 
 │   └── federation.config.js 
-└── spec/ 
-    ├── CONSTITUTION.md 
-    ├── SPEC.md 
-    ├── PLAN.md 
-    ├── TASK.md 
-    └── openapi.yaml
+├── CONSTITUTION.md 
+├── SPEC.md 
+├── PLAN.md 
+└── TASKS.md 
 ```
