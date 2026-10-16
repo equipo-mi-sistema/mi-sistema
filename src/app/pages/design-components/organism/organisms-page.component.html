@@ -1,0 +1,331 @@
+<div class="space-y-6 sm:space-y-8 animate-fadeIn">
+  <!-- Section Title -->
+  <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <div>
+      <div class="flex items-center gap-2">
+        <app-badge variant="warning" size="md">Nivel 3 &bull; Organisms</app-badge>
+        <h2 class="text-xl font-bold text-slate-800">Componentes Organismos</h2>
+      </div>
+      <p class="text-xs text-slate-500 mt-1">Estructuras completas y complejas compuestas por moléculas y átomos reutilizables.</p>
+    </div>
+  </div>
+
+  <!-- 1. Tabla de Datos Empresarial (app-data-table) -->
+  <div class="space-y-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Tabla de Datos Empresarial (&lt;app-data-table&gt;)</h3>
+        <p class="text-xs text-slate-500">Cabeceras ordenables, selección por checkboxes, badges automáticos y scroll responsivo.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">data-table/</code>
+    </div>
+
+    @if (selectedTableUsers.length > 0) {
+      <div class="text-xs bg-brand-50 text-brand-800 p-2.5 rounded-xl border border-brand-100 flex items-center justify-between">
+        <span>Filas seleccionadas: <strong>{{ selectedTableUsers.length }}</strong></span>
+        <button
+          type="button"
+          class="text-xs text-brand-600 underline font-semibold cursor-pointer"
+          (click)="triggerToast('info')"
+        >
+          Acción por lote
+        </button>
+      </div>
+    }
+
+    <app-data-table
+      [columns]="tableColumns"
+      [data]="sampleUsers"
+      [selectable]="true"
+      (sortChange)="onTableSort($event)"
+      (selectionChange)="onTableSelection($event)"
+    ></app-data-table>
+  </div>
+
+  <!-- 2. Sistema Global de Toasts y Drawer Lateral -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Toasts Demo -->
+    <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Sistema Global de Toasts (&lt;ToastService&gt;)</h3>
+          <p class="text-xs text-slate-500">Notificaciones emergentes no bloqueantes con auto-cierre y animaciones.</p>
+        </div>
+        <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">toast/</code>
+      </div>
+
+      <p class="text-xs text-slate-500">
+        Haz clic en cualquiera de los botones para disparar una notificación flotante desde el servicio global:
+      </p>
+
+      <div class="flex flex-wrap items-center gap-2.5">
+        <app-button variant="primary" size="sm" (clicked)="triggerToast('success')">
+          <span>Toast Éxito</span>
+        </app-button>
+
+        <app-button variant="secondary" size="sm" (clicked)="triggerToast('error')">
+          <span>Toast Error</span>
+        </app-button>
+
+        <app-button variant="outline" size="sm" (clicked)="triggerToast('warning')">
+          <span>Toast Advertencia</span>
+        </app-button>
+
+        <app-button variant="ghost" size="sm" (clicked)="triggerToast('info')">
+          <span>Toast Info</span>
+        </app-button>
+      </div>
+    </div>
+
+    <!-- Drawer Demo -->
+    <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+        <div>
+          <h3 class="font-semibold text-slate-800 text-sm">Panel Lateral Offcanvas (&lt;app-drawer&gt;)</h3>
+          <p class="text-xs text-slate-500">Ideal para formularios de edición rápida o filtros sin salir de la página.</p>
+        </div>
+        <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">drawer/</code>
+      </div>
+
+      <p class="text-xs text-slate-500">
+        Abre un panel deslizante desde el borde derecho con backdrop desenfocado y tecla ESC:
+      </p>
+
+      <div>
+        <app-button variant="primary" size="sm" (clicked)="isDrawerOpen = true">
+          <span>Abrir Drawer de Edición</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Component Instance -->
+  <app-drawer
+    [(isOpen)]="isDrawerOpen"
+    title="Editar Información de Usuario"
+    size="md"
+  >
+    <div class="space-y-4 pt-1">
+      <p class="text-xs text-slate-500">
+        Modifica los campos y pulsa guardar para sincronizar cambios a través del servicio reactivo.
+      </p>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo</label>
+        <app-input value="Juan Miguel"></app-input>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+        <app-input value="juan.miguel@empresa.com" type="email"></app-input>
+      </div>
+
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
+        Los cambios realizados aquí se reflejan instantáneamente en todo el shell del sistema.
+      </div>
+    </div>
+
+    <div drawer-footer class="flex items-center gap-2">
+      <app-button variant="ghost" size="sm" (clicked)="isDrawerOpen = false">
+        <span>Cancelar</span>
+      </app-button>
+      <app-button variant="primary" size="sm" (clicked)="isDrawerOpen = false; triggerToast('success')">
+        <span>Guardar Cambios</span>
+      </app-button>
+    </div>
+  </app-drawer>
+
+  <!-- 3. Carga de Archivos Drag & Drop (app-file-upload) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-1">
+      <div>
+        <h3 class="font-semibold text-slate-800 text-sm">Zona de Carga Drag &amp; Drop (&lt;app-file-upload&gt;)</h3>
+        <p class="text-xs text-slate-500">Permite arrastrar archivos, valida pesos máximos y muestra una lista con eliminación.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">file-upload/</code>
+    </div>
+
+    <app-file-upload
+      [multiple]="true"
+      [maxSizeMb]="15"
+      (filesSelected)="onFilesUploaded($event)"
+    ></app-file-upload>
+  </div>
+
+  <!-- 4. Modales de Notificación y Confirmación (app-modal, app-confirm-modal, app-notification-modal) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-slate-800 text-sm">Sistema de Modales y Diálogos</h3>
+          <app-badge variant="brand" size="sm">Base + Confirm + Notify</app-badge>
+        </div>
+        <p class="text-xs text-slate-500">Backdrop con blur, accesibilidad con tecla ESC, animaciones y adaptación móvil.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">modal/</code>
+    </div>
+
+    <!-- Acciones para disparar modales -->
+    <div class="space-y-3 pt-2">
+      <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3">
+        <app-button variant="primary" size="sm" class="w-full sm:w-auto" (clicked)="isBaseModalOpen = true">
+          <span>Abrir Modal Estándar</span>
+        </app-button>
+
+        <app-button variant="outline" size="sm" class="w-full sm:w-auto text-rose-600 border-rose-300 hover:bg-rose-50" (clicked)="openConfirmModal()">
+          <span>Modal Confirmación (Eliminar)</span>
+        </app-button>
+
+        <app-button variant="secondary" size="sm" class="w-full sm:w-auto" (clicked)="openNotification('success')">
+          <span>Notificación Éxito</span>
+        </app-button>
+
+        <app-button variant="secondary" size="sm" class="w-full sm:w-auto" (clicked)="openNotification('error')">
+          <span>Notificación Error</span>
+        </app-button>
+      </div>
+
+      <div class="text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200">
+        Estado de interacción: <strong class="text-brand-600">{{ lastModalResult }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Estándar Base -->
+  <app-modal
+    [(isOpen)]="isBaseModalOpen"
+    title="Configuración de Parámetros del Host"
+    size="md"
+  >
+    <div class="space-y-4">
+      <p class="text-xs text-slate-600">
+        Este modal base incluye cierre automático con la tecla <strong>ESC</strong>, clic fuera en el fondo (backdrop) o botón de cerrar.
+      </p>
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+        <p class="font-semibold text-slate-700">Contenido proyectado</p>
+        <p class="text-slate-500">Puedes inyectar formularios, tablas o cualquier componente dentro del cuerpo del modal.</p>
+      </div>
+    </div>
+
+    <div modal-footer class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
+      <app-button variant="ghost" size="sm" class="w-full sm:w-auto" (clicked)="isBaseModalOpen = false">
+        <span>Cerrar</span>
+      </app-button>
+      <app-button variant="primary" size="sm" class="w-full sm:w-auto" (clicked)="isBaseModalOpen = false; lastModalResult = 'Guardado desde modal base.'">
+        <span>Guardar Cambios</span>
+      </app-button>
+    </div>
+  </app-modal>
+
+  <!-- Modal de Confirmación -->
+  <app-confirm-modal
+    [(isOpen)]="isConfirmModalOpen"
+    title="¿Eliminar recurso federado?"
+    message="Esta acción desvinculará permanentemente el microfrontend del catálogo. Esta operación no se puede revertir."
+    confirmText="Sí, eliminar"
+    cancelText="Cancelar"
+    variant="danger"
+    [loading]="isConfirmLoading"
+    (confirmed)="handleConfirmAction()"
+    (cancelled)="handleCancelAction()"
+  ></app-confirm-modal>
+
+  <!-- Modal de Notificación -->
+  <app-notification-modal
+    [(isOpen)]="isNotificationModalOpen"
+    [type]="notificationType"
+    [title]="notificationType === 'success' ? '¡Operación Exitosa!' : 'Atención Requerida'"
+    [message]="notificationType === 'success' ? 'Los componentes se generaron y exportaron correctamente en el sistema.' : 'Ocurrió un inconveniente al conectar con el servidor.'"
+    buttonText="Entendido"
+    (closed)="lastModalResult = 'Notificación cerrada.'"
+  ></app-notification-modal>
+
+  <!-- 5. Acordeón Completo (app-accordion) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-slate-800 text-sm">Acordeón Coordinado (&lt;app-accordion&gt;)</h3>
+          <app-badge variant="brand" size="sm">Modo Dinámico</app-badge>
+        </div>
+        <p class="text-xs text-slate-500">Administra múltiples paneles colapsables con opción de auto-cierre exclusivo.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">accordion/</code>
+    </div>
+
+    <div class="flex items-center gap-3 pt-1">
+      <label class="text-xs font-semibold text-slate-700">Modo Acordeón (Solo uno abierto a la vez):</label>
+      <input
+        type="checkbox"
+        [checked]="accordionModeActive"
+        (change)="accordionModeActive = !accordionModeActive"
+        class="rounded text-brand-600 focus:ring-brand-500 h-4 w-4 cursor-pointer"
+      />
+      <span class="text-xs text-slate-400">({{ accordionModeActive ? 'Activado' : 'Desactivado' }})</span>
+    </div>
+
+    <app-accordion [accordionMode]="accordionModeActive" class="block pt-2">
+      <app-accordion-item
+        title="¿Cómo funciona el Host Shell en Native Federation?"
+        subtitle="Orquestación y enrutamiento"
+        icon="cube"
+        [isOpen]="true"
+      >
+        El Host Shell actúa como la aplicación contenedora raíz. Se encarga del diseño base (Navbar, Sidebar y Menú reutilizable), la autenticación de usuarios con Firebase y la carga dinámica bajo demanda (lazy-loading) de los microfrontends remotos.
+      </app-accordion-item>
+
+      <app-accordion-item
+        title="¿Cómo se comparten los componentes Atómicos?"
+        subtitle="Reutilización en toda la suite"
+        icon="palette"
+      >
+        A través de la carpeta compartida <code>src/app/shared/components</code>, exponiendo índices de barril limpios para que cualquier página o módulo los consuma sin duplicar código CSS ni dependencias.
+      </app-accordion-item>
+    </app-accordion>
+  </div>
+
+  <!-- 6. Menú Reutilizable con Submenús (app-menu) -->
+  <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200/80 p-4 sm:p-6 shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
+      <div>
+        <div class="flex items-center gap-2">
+          <h3 class="font-semibold text-slate-800 text-sm">Menú Multinivel Reutilizable (&lt;app-menu&gt;)</h3>
+          <app-badge variant="brand" size="sm">Organismo</app-badge>
+        </div>
+        <p class="text-xs text-slate-500">Soporta opciones directas, submenús desplegables con chevrons dinámicos, badges, modo colapsado y acordeón.</p>
+      </div>
+      <code class="text-[10px] sm:text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded self-start sm:self-auto">menu/</code>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 pt-2">
+      <div class="p-3.5 sm:p-4 bg-slate-50 rounded-xl border border-slate-200">
+        <div class="text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider flex items-center justify-between">
+          <span>Vista previa interactiva</span>
+          <span class="text-[10px] sm:text-[11px] font-normal text-slate-400">Haz clic para desplegar</span>
+        </div>
+
+        <div class="bg-white p-3 rounded-lg border border-slate-200/80 shadow-xs max-w-sm">
+          <app-menu
+            [items]="demoMenuItems"
+            [collapsed]="false"
+            (itemClicked)="handleDemoMenuClick($event)"
+          ></app-menu>
+        </div>
+
+        <div class="mt-3 p-2.5 rounded-lg bg-brand-50/70 border border-brand-100 text-xs text-brand-800 flex items-center justify-between">
+          <span class="truncate">{{ lastMenuAction }}</span>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <h4 class="text-xs font-semibold text-slate-700 uppercase tracking-wider">Características del Componente:</h4>
+        <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+          <li><strong>Submenús automáticos:</strong> Al hacer clic en una opción con <code>children</code>, despliega o contrae sus hijos.</li>
+          <li><strong>Detección de ruta activa:</strong> Si el usuario navega a un submenú, el padre se abre automáticamente.</li>
+          <li><strong>Responsive &amp; Drawer:</strong> Se integra tanto en el sidebar de escritorio como en el drawer móvil.</li>
+          <li><strong>Completamente desacoplado:</strong> Recibe <code>[items]</code> vía Input y emite <code>(itemClicked)</code> vía Output.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
